@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Example 09.02 - Selecting objects</title>
+    <script type="text/javascript" src="libs/three.js"></script>
+
+    <script type="text/javascript" src="libs/stats.min.js"></script>
+    <script type="text/javascript" src="libs/dat.gui.min.js"></script>
+    <script type="text/javascript" src="libs/controls/DragControls.js"></script>
+    <script type="text/javascript" src="libs/controls/TrackballControls.js"></script>
+
+    <style>
+        body {
+            /* set margin to 0 and overflow to hidden, to go fullscreen */
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="Stats-output">
+    </div>
+    <!-- Div which will hold the Output -->
+    <div id="WebGL-output">
+    </div>
+
+    <script type="text/javascript">
+        function init(){
+            var scene = new THREE.Scene();
+
+            var camera = new THREE.PerspectiveCamera(45.0, window.innerWidth/window.innerHeight, 1, 10000);
+            camera.position.set(0, 0, 1000);
+
+            var webGLRenderer = new THREE.WebGLRenderer({antialias: true}); // antialias设置坑锯齿
+            webGLRenderer.setClearColor(0xeeeeee, 1.0);
+            webGLRenderer.setPixelRatio(window.devicePixelRatio); // 设置设备分辨率，经常用于HiDPI设备，防止输出画布
+            webGLRenderer.setSize(window.innerWidth, window.innerHeight);
+            webGLRenderer.sortObjects = false; //设备渲染器是否应该排序对象
+
+            webGLRenderer.shadowMap.enabled = true; //是否使用阴影
+            webGLRenderer.shadowMap.type = THREE.PCFShadowMap; //阴影类型为PCFShadowMap
+
+            var controls = new THREE.TrackballControls(camera);
+            controls.rotateSpeed = 1.0;
+            controls.zoomSpeed = 1.2;
+            controls.panSpeed = 0.8;
+            controls.noZoom = false;
+            controls.noPan = false;
+            controls.staticMoving = true;
+            controls.dynamicDampingFactor = 0.3;
+
+            var ambientLight = new THREE.AmbientLight(0x505050);
+            scene.add(ambientLight);
+
+            var light = new THREE.SpotLight(0xffffff, 1.5);
+            light.position.set(0, 500, 2000);
+            light.castShadow = true;
+
+            light.shadow = new THREE.LightShadow(new THREE.PerspectiveCamera(50, 1, 200, 10000));
+            light.shadow.bias = -0.00022;
+            light.shadow.mapSize.width = 2048;
+            light.shadow.mapSize.height = 20148;
+
+            scene.add(light);
+
+            var objects = [];
+            var geometry = new THREE.BoxGeometry(40, 40, 40);
+            for(var i = 0; i < 200; i++){
+                var object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({
+                    color: Math.random() * 0xffffff
+                }));
+                object.position.set(Math.random() * 1000 - 500, Math.random() * 600 - 300, Math.random() * 800 - 400);
+                object.rotation.set(Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI);
+                object.scale.set(Math.random() * 2 + 1, Math.random() * 2 + 1, Math.random() * 2 + 1);
+
+                object.castShadow = true;
+                object.receiveShadow = true;
+                scene.add(object);
+                objects.push(object);
+            }
+
+            document.getElementById("WebGL-output").appendChild(webGLRenderer.domElement);
+
+            var dragControls = new THREE.DragControls(objects, camera, webGLRenderer.domElement);
+            var currentColor;
+            dragControls.addEventListener("dragstart", function(event){
+                currentColor = event.object.material.color;
+                event.object.material.color = new THREE.Color(0xffff00);
+                event.object.material.transparent = true;
+                event.object.material.opacity = 0.6;
+                controls.enabled = false;
+            });
+            dragControls.addEventListener("dragend", function(event){
+                event.object.material.opacity = 1.0;
+                event.object.material.color = currentColor;
+                controls.enabled = true;
+            });
+
+            render();
+
+            function render(){
+                controls.update();
+
+                webGLRenderer.render(scene, camera);
+                requestAnimationFrame(render);
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>

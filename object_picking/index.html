@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>object picking with three.js</title>
+    <script type="text/javascript" src="libs/three.js"></script>
+    <script type="text/javascript" src="libs/stats.min.js"></script>
+    <script type="text/javascript" src="libs/dat.gui.min.js"></script>
+
+    <script type="text/javascript" src="libs/controls/TrackballControls.js"></script>
+
+    <style>
+        body {
+            /* set margin to 0 and overflow to hidden, to go fullscreen */
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div id="Stats-output">
+    </div>
+    <!-- Div which will hold the Output -->
+    <div id="WebGL-output">
+    </div>
+    <script type="text/javascript">
+        function init(){
+            var range = 500;
+            var scene = new THREE.Scene();
+
+            var renderer = new THREE.WebGLRenderer({antialias: true});
+            renderer.setClearColor(0xeeeedd, 1.0);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enable = true;
+
+            var camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 1, 10000);
+            camera.position.set(0, 0, range * 2);
+            camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+            var geom = new THREE.CubeGeometry(5, 5, 5);
+            var cubes = new THREE.Object3D();
+
+            scene.add(cubes);
+
+            for(var i = 0; i < 100; i ++){
+                var grayness = Math.random() * 0.5 + 0.25,
+                        mat = new THREE.MeshBasicMaterial(),
+                        cube = new THREE.Mesh(geom, mat);
+                mat.color.setRGB(grayness, grayness, grayness);
+                cube.position.set(range * (0.5 - Math.random()), range * (0.5 - Math.random()), range * (0.5 - Math.random()));
+                cube.rotation.set( Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI );
+                cube.grayness = grayness;
+                cubes.add(cube);
+            }
+
+            var raycaster = new THREE.Raycaster();
+            var mouseVector = new THREE.Vector3();
+            
+            window.addEventListener("mousemove", onMouseMove, false);
+
+            var controls = new THREE.TrackballControls(camera);
+            controls.zoomSpeed = 0.1;
+
+            document.getElementById("WebGL-output").appendChild(renderer.domElement);
+
+            render();
+
+            function onMouseMove(event){
+                mouseVector.x = 2 * (event.clientX / window.innerWidth) - 1;
+                mouseVector.y = 1 - 2 * (event.clientY / window.innerHeight);
+
+                raycaster.setFromCamera(mouseVector.clone(), camera);
+                var intersects =raycaster.intersectObjects(cubes.children);
+
+                cubes.children.forEach(function(cube){
+                    cube.material.color.setRGB(cube.grayness, cube.grayness, cube.grayness);
+                });
+
+                for(var i = 0, len = intersects.length; i < len; i++){
+                    var intersection = intersects[i],
+                            obj = intersects[i].object;
+
+                    obj.material.color.setRGB(1.0 - i / intersects.length, 0, 0);
+                }
+            }
+
+            function render(){
+                controls.update();
+                renderer.render(scene, camera);
+                requestAnimationFrame(render);
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
