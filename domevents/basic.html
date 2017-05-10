@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>threex.domevents插件</title>
+    <script src="libs/three.js"></script>
+    <script src="libs/threex.domevents.js"></script>
+</head>
+<body>
+    <div id="log" style="position: fixed; top: 5px; left: 5px;">
+    </div>
+    <!-- Div which will hold the Output -->
+    <div id="WebGL-output">
+    </div>
+
+    <script type="text/javascript">
+        function init(){
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(45.0, window.innerWidth / window.innerHeight, 1, 1000);
+            camera.position.set(30, 40, 50);
+            camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+            var webGLRenderer = new THREE.WebGLRenderer();
+            webGLRenderer.setPixelRatio(window.devicePixelRatio);
+            webGLRenderer.setSize(window.innerWidth, window.innerHeight);
+            webGLRenderer.shadowMapEnabled = true;
+
+            var ambientLight = new THREE.AmbientLight(0xffffff);
+            scene.add(ambientLight);
+
+            var spotLight = new THREE.SpotLight(0xffffff, 1.2);
+            spotLight.position.set(-30, 40, 50);
+            scene.add(spotLight);
+
+            var geom = new THREE.BoxGeometry(5, 5, 5);
+            var material = new THREE.MeshBasicMaterial({color: 0xff0000});
+            var sphereMesh = new THREE.Mesh(geom, material);
+            sphereMesh.position.set(0, 0, 0);
+            scene.add(sphereMesh);
+
+            document.getElementById("WebGL-output").appendChild(webGLRenderer.domElement);
+            var domEvents = new THREEx.DomEvents(camera, webGLRenderer.domElement);
+            //显示events日志
+            THREEx.DomEvents.eventNames.forEach(function(eventName){
+                if(eventName === "mousemove") return;
+                domEvents.addEventListener(sphereMesh, eventName, function(event){
+                    var domElement = document.querySelector("#log");
+                    domElement.innerHTML =  event.type + "<br/>" + domElement.innerHTML ;
+                }, false);
+            });
+
+            render();
+
+            var step = 0;
+            function render(){
+                sphereMesh.rotation.x = (step += 0.01);
+                sphereMesh.rotation.z = step;
+
+                webGLRenderer.render(scene, camera);
+                requestAnimationFrame(render);
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>

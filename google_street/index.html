@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <mata name="viewport" content="width=device.width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"></mata>
+    <title>WebGL Google Street Viewer</title>
+</head>
+<body>
+    <div id="pano"></div>
+
+    <div id="preloader">
+        <div id="bar"></div>
+    </div>
+
+    <script type="text/javascript" src="libs/GSVPano.js"></script>
+    <script type="text/javascript" src="libs/three.js"></script>
+    <script type="text/javascript" src="libs/RequestAnimationFrame.js"></script>
+
+    <script type="x-shader/x-vertex" id="vs-sphere">
+        varying vec2 vUv;
+
+        void main(){
+            vUv = vec2(1.0 - uv.x, uv.y);
+            vec4 mPosition = modelMatrix * vec4(position, 1.0);
+            gl_Position = projectionMatrix * modelViewMatrix * mPosition;
+        }
+    </script>
+
+    <script type="x-shader/x-fragment" id="fs-sphere">
+        uniform sampler2D map;
+        varying vec2 vUv;
+
+        void main(){
+            gl_FragColor = vec4(texture2D(map, vUv).rgb, 1.0);
+        }
+    </script>
+
+    <script type="text/javascript">
+        "use strict";
+
+        var map, canvas, ctx;
+        var marker = null;
+        var container, mesh, renderer, camera, scene, material;
+        var fov = 70, nFov = 70;
+        var onDist = 0, onFov;
+        var lat = 0, lon = 0, nLat = 0, nLon = 0;
+        var zoom;
+        var geocoder;
+        var error, errorDiv;
+        var activeLocation = null;
+        var proloader = document.getElementById("preloader");
+        var bar = document.getElementById("bar");
+        var scaleButtons = [];
+        var cd = new Date();
+        var time = cd.getTime();
+        var position = {x: 0, y: 0};
+        var loader = new GSVPANO.PanoLoader();
+
+        function setProgress(progress){
+            bar.style.width = (proloader.clientWidth - 6) * progress / 100 + "px";
+        }
+
+        function showProgress(show){
+            proloader.style.opacity = (show == true) ? 1 : 0;
+            proloader.style.display = (show == true ) ? "block" : "none";
+        }
+
+        function setZoom( z ){
+            zoom = z;
+            loader.setZoom( z);
+            for(var j = 0; j < scaleButtons.length; j++){
+                scaleButtons[j].className = scaleButtons[j].className.replace("active", "");
+                if(z == (j + 1)) scaleButtons[j].className += "active";
+                if(activeLocation) loader.load(activeLocation);
+            }
+        }
+
+        function geoSuccess(position){
+            var currentLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+            map.panTo(currentLocation);
+            addMarker(currentLocation);
+        }
+
+        function geoError( message ){
+            showError(message);
+        }
+
+        function initialize(){
+            var locations = [
+                { lat: 51.50700703827454, lng: -0.12791916931155356 },
+                { lat: 32.6144404, lng: -108.9852017 },
+                { lat: 39.36382677360614, lng: 8.431220278759724 },
+                { lat: 59.30571937680209, lng: 4.879402148657164 },
+                { lat: 28.240385123352873, lng: -16.629988706884774 },
+                { lat: 50.09072314148827, lng: 14.393133454556278 },
+                { lat: 41.413416092316275, lng: 2.1531126527786455 },
+                { lat: 35.69143938066447, lng: 139.695139627539 },
+                { lat: 35.67120372775569, lng: 139.77167914398797 },
+                { lat: 54.552083679428065, lng: -3.297380963134742 }
+            ];
+
+            var pos;
+            if(window.location.hash){
+                var parts = window.location.hash.substr(1).split(",");
+                pos = {lat: parts[0], lng: parts[1]};
+            }else{
+                pos = locations[Math.floor(Math.random() * locations.length)];
+            }
+
+            var myLatlng = new google.maps.Latlng(pos.lat, pos.lng);
+            for(var j = 1; j < 5; j++){
+                var el = document.getElementById("scale" + j);
+                scaleButtons.push(el);
+                (function(z){
+                    el.addEventListener("click", function(e){
+                        e.preventDefault();
+                        setZoom(z);
+                    }, false);
+                })(j);
+            }
+
+            canvas = document.createElement("canvas");
+            ctx = canvas.getContext("2d");
+
+            container = document.getElementById("pano");
+
+            camera = new THREE.PerspectiveCamera(fov, window.innerWidth/window.innerHeight, 1, 1100);
+            camera.target = new THREE.Vector3(0, 0, 0);
+
+            scene = new THREE.Scene();
+            scene.add(camera);
+
+            renderer = new THREE.WebGLRenderer();
+            renderer.autoClearColor = false;
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            material = new THREE.ShaderMaterial({
+                uniforms: {
+                    map: {type: "t", value: THREE.ImageUtils.loadTexture("placeholder.jpg") }
+                },
+                vertexShader: document.getElementById("vs-sphere").textContent,
+                fragmentShader: document.getElementById("fs-sphere").textContent,
+                side: THREE.DoubleSide
+            });
+
+            var faces = 50;
+            mesh = new THREE.Mesh( new THREE.SphereGeometry(500, 60, 40), material);
+            scene.add(mesh);
+        }
+    </script>
+</body>
+</html>
