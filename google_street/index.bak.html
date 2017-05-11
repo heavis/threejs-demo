@@ -148,7 +148,7 @@
             loader.setZoom( z);
             for(var j = 0; j < scaleButtons.length; j++){
                 scaleButtons[j].className = scaleButtons[j].className.replace("active", "");
-                if(z == (j + 1)) scaleButtons[j].className += " active";
+                if(z == (j + 1)) scaleButtons[j].className += "active";
                 if(activeLocation) loader.load(activeLocation);
             }
         }
@@ -396,13 +396,7 @@
         }
 
         function onContainerMouseUp(event){
-            event.preventDefault();
-            isUserInteracting = false;
-            var el = document.querySelectorAll(".hide");
-            for(var j = 0; j < el.length; j++){
-                el[j].style.opacity = 1;
-                el[j].style.pointEvents = "auto";
-            }
+
         }
 
         function addMarker(location){
