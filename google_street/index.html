@@ -28,48 +28,23 @@
 </head>
 <body>
     <div id="pano"></div>
-
-    <div id="title" class="hide">
-        <h1>Google Street Viewer</b> | <a href="http://twitter.com/thespite" rel="external">@thespite</a></h1>
-        <p>A google street panorama viewer with WebGL using <a href="https://github.com/spite/GSVPano.js" rel="external">GSVPano.js</a> and <a href="https://github.com/mrdoob/three.js" rel="external">three.js</a>. Uses Geolocation API, Fullscreen API and Pointer Lock API if available.</p>
-        <p>You'll need <a href="http://www.google.com/chrome" rel="external">Chrome</a>, <a href="http://nightly.mozilla.org/" rel="external">Firefox 8+</a>, or another browser that supports <a href="http://enable-cors.org/" rel="external">CORS</a> WebGL textures.</p>
-        <a href="http://www.clicktorelease.com/code/streetViewReflectionMapping" class="button">Check out the Floating Shiny Knot!</a><br/><br/>
-        <g:plusone width="280"></g:plusone>
-        <script type="text/javascript">
-            (function() {
-                var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-                po.src = 'https://apis.google.com/js/plusone.js';
-                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-            })();
-        </script><br/>
-        <a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="thespite">Tweet</a><script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
-        <p><a href="http://clicktorelease.com/+" rel="external">Find me on google+</a> | <a href="http://clicktorelease.com/@" rel="external">Follow me on twitter</a></p>
-    </div>
-
     <div id="options" class="hide">
-
-        <h1>How to use</h1>
-
-        <p><b>Click and drag</b> the panorama<br/>viewer. <b>Mouse wheel</b> to zoom in<br/>and out. Use the controls on the right to<br/>look for addresses and change image quality.</p>
-
-        <a href="https://github.com/spite/GSVPano.js" rel="external" ><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/camo.github.com/30f550e0d38ceb6ef5b81500c64d970b7fb0f028/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub"></a>
-
         <div id="map"></div>
 
         <div class="block">
             <form id="map_form">
                 <input type="text" name="address" id="address" />
-                <button type="submit" class="primary button" id="searchButton" >Search</button>
+                <button type="submit" class="primary button" id="searchButton" >查询</button>
             </form>
         </div>
 
         <div class="block">
-            <button type="submit" id="myLocationButton" style="width: 148px" class="button">Use my location</button>
-            <button type="submit" id="fullscreenButton" style="width: 148px" class="button">Go fullscreen</button>
+            <button type="submit" id="myLocationButton" style="width: 148px" class="button">使用我的位置</button>
+            <button type="submit" id="fullscreenButton" style="width: 148px" class="button">全屏</button>
         </div>
 
         <div class="block">
-            <b>Quality</b>
+            <b>质量</b>
             <form id="pano_form" style="position: absolute; right: 0; top: 0">
                 <button name="scale" style="width: 4em" id="scale1" class="left button">Low</button>
                 <button name="scale" style="width: 6em" id="scale2" class="middle button">Medium</button>

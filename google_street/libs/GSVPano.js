@@ -89,6 +89,8 @@ GSVPANO.PanoLoader = function(parameters){
         }
     };
 
+    //为什么这里设置图片尺寸为512 * 512，而画布大小却为416？
+    //google地图返回的图片尺寸都是512 * 512,但由于全景相机拍摄有部分是盲区，所有最后一行图片的底下部分都是黑色的被丢弃的。这部分黑色的高度正好是yc * (512 - 416)
     this.composeFromTile = function(x, y, texture){
         x *= 512; //x方向编号编号所在像素位置
         y *= 512; // y方向编号所在像素位置
