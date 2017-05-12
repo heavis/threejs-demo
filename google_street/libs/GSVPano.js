@@ -35,11 +35,12 @@ GSVPANO.PanoLoader = function(parameters){
         var context = null;
         for(var ii = 0; ii < names.length; ++ii){
             gl = canvas.getContext(names[ii]);
+            if(gl){ break;}
         }
     }catch(error){}
 
-    var maxW = 1024;
-    var maxH = 1024;
+    var maxW = 1024; // 一个纹理在x方向的最大尺寸
+    var maxH = 1024; // 一个纹理在y方向的最大尺寸
 
     if(gl){
         var maxTexSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
@@ -68,13 +69,13 @@ GSVPANO.PanoLoader = function(parameters){
         _wc = Math.ceil(w / maxW); // x方向，图片数量
         _hc = Math.ceil(h / maxH); // y方向，图片数量
 
-        _canvas = [];
-        _ctx = [];
+        _canvas = []; // canvas集合
+        _ctx = []; //上下文集合
 
         var ptr = 0;
         for(var y = 0; y < _hc; y++){ // y方向
             for(var x = 0; x < _wc; x++ ){ // x方向
-                var c = document.createElement("canvas");
+                var c = document.createElement("canvas"); //创建一个新的canvas
                 if( x < (_wc - 1)) c.width = maxW;
                 else c.width = w - (maxW * x);
                 if( y < (_hc - 1)) c.height = maxH;
@@ -89,8 +90,8 @@ GSVPANO.PanoLoader = function(parameters){
     };
 
     this.composeFromTile = function(x, y, texture){
-        x *= 512;
-        y *= 512;
+        x *= 512; //x方向编号编号所在像素位置
+        y *= 512; // y方向编号所在像素位置
         var px = Math.floor(x / maxW), py = Math.floor( y / maxH); // px和py表示当前图片所在像素位置
 
         x -= px * maxW;
@@ -171,7 +172,7 @@ GSVPANO.PanoLoader = function(parameters){
                 self.loadPano(location, data.result[0].id);
             }
         }
-        http_request.send();
+        http_request.send(null);
     }
 
     this.loadPano = function(location, id){
@@ -198,6 +199,7 @@ GSVPANO.PanoLoader = function(parameters){
 
     this.setZoom = function(z){
         _zoom = z;
+        console.log(z);
         this.adaptTextureToZoom();
     };
 
