@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>汽车展厅</title>
+    <link rel="stylesheet" href="assets/css/index.css">
+    <style type="text/css">
+
+    </style>
+</head>
+<body>
+    <div id="scene3d" class="car-booth" style="display: none;">
+        <div id="webgl-output">
+        </div>
+        <div id="Stats-output">
+        </div>
+        <div class="nav-bar">
+            <div id="carExchangeBtn" class="menu-btn cus-car-btn">
+                <span >选择汽车型号</span>
+            </div>
+            <div id="carColorBtn" class="menu-btn">
+                <button style="position: absolute; float: left; height: 60px; width: 0; visibility: hidden"  class="jscolor {onFineChange: 'updateCarColor(this)' }"></button><img src="assets/images/carColor.png">
+            </div>
+            <div id="rimColorBtn" class="menu-btn">
+                <button style="position: absolute; float: left; height: 60px; width: 0; visibility: hidden"  class="jscolor {onFineChange: 'updateWheelColor(this)' }"></button><img src="assets/images/rimColor.png">
+            </div>
+            <div id="volumeBtn" class="menu-btn">
+                <img src="assets/images/volumeOn.png">
+            </div>
+        </div>
+    </div>
+    <div id="loadingScene">
+    </div>
+    <script src="libs/three.js"></script>
+    <script src="libs/OrbitControls.js"></script>
+   <script src="libs/dat.gui.js"></script>
+   <script src="libs/SceneLoader.js"></script>
+   <script src="assets/models/carvisualizer.wheel_location.js"></script>
+   <script src="libs/eventDispatcher.js"></script>
+   <script src="libs/jscolor.min.js"></script>
+    <script src="libs/loader-ui.js"></script>
+    <script src="index.js"></script> 
+   <script src="ui.js"></script>
+</body>
+</html>
