@@ -163,8 +163,7 @@ GSVPANO.PanoLoader = function(parameters){
 
     this.load = function(location){
         var self = this;
-        var url = 'https://maps.google.com/cbk?output=json&hl=x-local&ll=' + location.lat() + ',' + location.lng() + '&cb_client=maps_sv&v=3';
-        url = 'https://cbks0.google.com/cbk?cb_client=maps_sv.tactile&authuser=0&hl=en&output=polygon&it=1%3A1&rank=closest&ll=' + location.lat() + ',' + location.lng() + '&radius=350';
+        var url = 'https://cbks0.google.com/cbk?cb_client=maps_sv.tactile&authuser=0&hl=en&output=polygon&it=1%3A1&rank=closest&ll=' + location.lat() + ',' + location.lng() + '&radius=350';
 
         var http_request = new XMLHttpRequest();
         http_request.open("GET", url, true);
@@ -185,8 +184,8 @@ GSVPANO.PanoLoader = function(parameters){
                 if(self.onPanoramaData){
                     self.onPanoramaData(result);
                 }
-                var h = google.maps.geometry.spherical.computeHeading(location, result.location.latLng);
-                rotation = (result.tiles.centerHeading - h) * Math.PI / 180.0;
+                //var h = google.maps.geometry.spherical.computeHeading(location, result.location.latLng);
+                //rotation = (result.tiles.centerHeading - h) * Math.PI / 180.0;
                 copyright = result.copyright;
                 self.copyright = result.copyright;
                 _panoId = result.location.pano;
