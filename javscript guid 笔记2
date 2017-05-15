@@ -353,3 +353,21 @@ var amy = new WorkerBee;
 
 Employee.prototype.name = "Unknown";
 此时，amy.name值为“Unknown”。
+（5）多父对象的实现方法：如下面代码提供的方式，优化代码可使用call或者apply，例如WorkerBee.call(this);
+function Hobbyist (hobby) {
+   this.hobby = hobby || "scuba";
+}
+
+function Engineer (name, projs, mach, hobby) {
+   this.base1 = WorkerBee;
+   this.base1(name, "engineering", projs);
+   this.base2 = Hobbyist;
+   this.base2(hobby);
+   this.machine = mach || "";
+}
+Engineer.prototype = new WorkerBee;
+
+var dennis = new Engineer("Doe, Dennis", ["collabra"], "hugo")
+
+
+看到：https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects   Enumerating all properties of an object
