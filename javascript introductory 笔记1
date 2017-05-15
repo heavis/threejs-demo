@@ -1,0 +1,157 @@
+第一章 面向对象的Javascript
+1.命名空间
+（1）定义：javascript的命名空间其实也就是一个全局的常规对象，像变量、方法都可以变成命名空间的属性。所以它也可以封装方法、函数、变量以及对象。
+（2）创建命名空间：var myapp = myapp || {};上面的代码先检查myapp是否已经在其他的文件中定义，如果已经定义就直接使用；如果没有定义这创建一个空对象。
+（3）创建子命名空间：命名空间创建后，我们可以直接创建子命名空间，例如：MYAPP.event = {};
+（4）创建包含变量和函数的命名空间，代码如下：
+// Create container called MYAPP.commonMethod for common method and properties
+MYAPP.commonMethod = {
+  regExForName: "", // define regex for name validation
+  regExForPhone: "", // define regex for phone no validation
+  validateName: function(name){
+    // Do something with name, you can access regExForName variable
+    // using "this.regExForName"
+  },
+ 
+  validatePhoneNo: function(phoneNo){
+    // do something with phone number
+  }
+}
+
+// Object together with the method declarations
+MYAPP.event = {
+    addListener: function(el, type, fn) {
+    // code stuff
+    },
+    removeListener: function(el, type, fn) {
+    // code stuff
+    },
+    getEvent: function(e) {
+    // code stuff
+    }
+  
+    // Can add another method and properties
+}
+
+// Syntax for Using addListener method:
+MYAPP.event.addListener("yourel", "type", callback);
+2.自定义对象
+（1）定义类：javascript使用函数来作为类。例如：var Person = function(){}，这样就相当于定义了一个Person类。
+（2）实例化对象：通过new关键字创建实体，例如：var person1 = new Person();
+（3）构造器：构造函数中设置属性值或者调用函数为创建对象做准备，下面的构造函数中打印了一条信息。代码如下：
+var Person = function () {
+  console.log('instance created');
+};
+
+var person1 = new Person();
+var person2 = new Person();
+（4）属性：关键字this代表当前对象，它让你在类型中可操作属性，并且在class外部也可通过实例访问这些属性。下面的代码为Person类型创建了一个firstname
+属性：
+var Person = function (firstName) {
+  this.firstName = firstName;
+  console.log('Person instantiated');
+};
+
+var person1 = new Person('Alice');
+var person2 = new Person('Bob');
+
+// Show the firstName properties of the objects
+console.log('person1 is ' + person1.firstName); // logs "person1 is Alice"
+console.log('person2 is ' + person2.firstName); // logs "person2 is Bob
+（5）方法：javscript的方法其实就是常规函数绑定到一个对象作为一个属性。下面的代码中sayHello是Person对象的一个方法，它就相当于对象的一个属性，然后把一个函数赋予了它。代码如下：
+var Person = function (firstName) {
+  this.firstName = firstName;
+};
+
+Person.prototype.sayHello = function() {
+  console.log("Hello, I'm " + this.firstName);
+};
+
+var person1 = new Person("Alice");
+var person2 = new Person("Bob");
+var helloFunction = person1.sayHello;
+
+// logs "Hello, I'm Alice"
+person1.sayHello();
+
+// logs "Hello, I'm Bob"
+person2.sayHello();
+
+// logs "Hello, I'm undefined" (or fails
+// with a TypeError in strict mode)
+helloFunction();                                    
+
+// logs true
+console.log(helloFunction === person1.sayHello);
+
+// logs true
+console.log(helloFunction === Person.prototype.sayHello);
+
+// logs "Hello, I'm Alice"
+helloFunction.call(person1);
+（6）继承：下面的代码我们定义了一个Student类型作为Person的子类型。然后重新定义sayHello方法以及添加sayGoodBye方法。代码如下：
+// 定义Person构造函数
+var Person = function(firstName) {
+  this.firstName = firstName;
+};
+
+// 在Person.prototype原型上增加了walk和sayHello方法
+Person.prototype.walk = function(){
+  console.log("I am walking!");
+};
+Person.prototype.sayHello = function(){
+  console.log("Hello, I'm " + this.firstName);
+};
+
+// 定义Student构造函数
+function Student(firstName, subject) {
+  //调用父类构造函数，确保this是Student当前上下文。
+  Person.call(this, firstName);
+  // 初始化属性
+  this.subject = subject;
+}
+//创建一个Student的原型链指向Person的原型链。需要注意的是这里我们不能使用new Person()作为值，
+//而应该通过Object.create(Person.prototype)来指向。
+Student.prototype = Object.create(Person.prototype); // See note below
+
+//设置原型链的"constructor"属性指向Student
+Student.prototype.constructor = Student;
+
+// 替换父类Person的"sayHello"方法
+Student.prototype.sayHello = function(){
+  console.log("Hello, I'm " + this.firstName + ". I'm studying "
+              + this.subject + ".");
+};
+
+// 增加sayGoodBye方法
+Student.prototype.sayGoodBye = function(){
+  console.log("Goodbye!");
+};
+
+// 实例化:
+var student1 = new Student("Janet", "Applied Physics");
+student1.sayHello();   // "Hello, I'm Janet. I'm studying Applied Physics."
+student1.walk();       // "I am walking!"
+student1.sayGoodBye(); // "Goodbye!"
+
+// 检查对象继承关系
+console.log(student1 instanceof Person);  // true 
+console.log(student1 instanceof Student); // true
+
+（7）函数：javscript函数也是继承于Object对象，Function.prototype属性是Object的一个实例化对象。例如下面的代码：
+foo = function () {};
+// logs "foo is a Function: true"
+console.log('foo is a Function: ' + (foo instanceof Function));
+// logs "foo.prototype is an Object: true"
+console.log('foo.prototype is an Object: ' + (foo.prototype instanceof Object));
+
+
+
+
+
+
+
+
+
+
+看到：https://developer.mozilla.org/en-US/Learn/HTML
