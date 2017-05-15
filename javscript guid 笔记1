@@ -1,0 +1,120 @@
+第一章 语法和类型
+1.基础
+（1）大小写敏感、基于uinicode编码
+（2）注释：// a one line comment 或者  /* this is a longer */
+2.声明定义
+（1）变量类型：var，定义变量；let，定义块域(scope)本地变量；const，定义只读常量。
+（1）变量格式：以字母、下划线、“_”或者$符号开头，大小写敏感。
+（2）变量赋值：声明但未赋值的变量使用时值为undefined，未声明的变量直接使用会抛异常。
+（3）未赋值变量作计算：结果为NaN。
+（4）变量作用域：在ES6之前没有块声明域，变量作用于函数块或者全局。如下面的代码输入的x为5.
+if (true) {
+  var x = 5;
+}
+console.log(x);  // 5
+  但ES6支持块作用域，但需要使用let生命变量。下面的代码输出结果为：undefined。
+  if (true) {
+  let y = 5;
+}
+console.log(y);  // ReferenceError: y is not defined1234
+（6）变量上浮：在一个方法或者全局代码中，我们再生命变量之前使用变量时并没有抛异常，而是返回undefiend。这是因为javascript自动把变量的生命上浮到函数或者全局的最前面。如下面的代码:
+/**
+ * Example 1
+ */
+console.log(x === undefined); // logs "true"
+var x = 3;
+
+/**
+ * Example 2
+ */
+// will return a value of undefined
+var myvar = "my value";
+ 
+(function() {
+  console.log(myvar); // undefined
+  var myvar = "local value";
+})();
+上面得代码和下面的代码是等价的：
+/**
+ * Example 1
+ */
+var x;
+console.log(x === undefined); // logs "true"
+x = 3;
+ 
+/**
+ * Example 2
+ */
+var myvar = "my value";
+ 
+(function() {
+  var myvar;
+  console.log(myvar); // undefined
+  myvar = "local value";
+})();
+（7）全局变量：在webpage中，全局对象是window，所以我们访问全局变量可通过window.variable。
+3.数据结构和类型
+（1）数据类型：6个基础类型和一个对象类型。基础类型包括Boolean（true或者false）、null（js大小写敏感，和Null、NULL是有区别的）、undefined、Number、String、Symbol（标记唯一和不可变）。对象类型：ojbect。
+（2）object和function：对象作为值得容器，函数作为应用成形的过程。
+（3）数据转换：字符串转换为数字可使用parseInt和parseFloat方法，
+（4）parseInt:函数签名为parseInt(string, radix)，radix是2-36的数字表示数字基数，例如十进制或者十六进制。返回结果为integer或者NaN。如下demo：
+parseInt("0xF", 16);
+parseInt("F", 16);
+parseInt("17", 8);
+parseInt(021, 8);
+parseInt("015", 10);
+parseInt(15.99, 10);
+parseInt("15,123", 10);
+parseInt("FXX123", 16);
+parseInt("1111", 2);
+parseInt("15*3", 10);
+parseInt("15e2", 10);
+parseInt("15px", 10);
+parseInt("12", 13);
+（5）parseFloat:函数签名为parseFloat(string)，返回结果为数字或者NaN。例如：
+parseFloat("3.14"); //返回数字
+parseFloat("314e-2"); //返回数字
+parseFloat("3.14more non-digit characters"); //返回NaN
+4.数据类型文本化
+（1）文本化类型：Array literals、Boolean literals、Floating-point literals、integers、Object literals、RegExp literals、String literals。
+（2）Array中额外的逗号情况：["Lion", , "Angel"]，长度为3，[1]的值为undefiend。['home', , 'school', ]，最后一个逗号省略所以长度为3。[ , 'home', , 'school']，长度为4。['home', , 'school', , ]，长度为4。
+（3）integer整数：整数可以表达为十进制、八进制、十六进制、二进制。例如：
+0, 117 and -345 (decimal, base 10)
+015, 0001 and -0o77 (octal, base 8) 
+0x1123, 0x00111 and -0xF1A7 (hexadecimal, "hex" or base 16)
+0b11, 0b0011 and -0b11 (binary, base 2)1234
+（4）浮点数：[(+|-)][digits][.digits][(E|e)[(+|-)]digits]。例如3.1415926，-.123456789，-3.1E+12，.1e-23
+（5）对象：对象的属性获取值可通过“.属性”或者“[属性名]”获取。例如：
+var car = { manyCars: {a: "Saab", "b": "Jeep"}, 7: "Mazda" };
+console.log(car.manyCars.b); // Jeep
+console.log(car[7]); // Mazda
+（5）对象属性：属性名可以是任意字符串或者空字符串，无效的名字可通过引号包含起来。不小的名字不能通过.获取，但可以通过[]获取。例如：
+var unusualPropertyNames = {
+  "": "An empty string",
+  "!": "Bang!"
+}
+console.log(unusualPropertyNames."");   // SyntaxError: Unexpected string
+console.log(unusualPropertyNames[""]);  // An empty string
+console.log(unusualPropertyNames.!);    // SyntaxError: Unexpected token !
+console.log(unusualPropertyNames["!"]); // Bang!
+（6）字符串特殊字符：字符串包含的特殊字符主要有下面的这些。
+\0 Null Byte 
+\b Backspace 
+\f Form feed 
+\n New line 
+\r Carriage return 
+\t Tab 
+\v Vertical tab 
+\' Apostrophe or single quote 
+\" Double quote 
+\\ Backslash character 
+（7）转意字符：下面的字符串输出结果包含了双引号，因为使用了转意符号“\"”。
+var quote = "He read \"The Cremation of Sam McGee\" by R.W. Service.";
+console.log(quote);
+输出：He read "The Cremation of Sam McGee" by R.W. Service.1。
+（8）字符串换行法：直接在字符串行结束时添加“\”，如下代码所示。
+var str = "this string \
+is broken \
+across multiple\
+lines."
+console.log(str);   // this string is broken across multiplelines.
