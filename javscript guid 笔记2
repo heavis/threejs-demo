@@ -250,3 +250,53 @@ Object.defineProperties(o, {
 
 o.c = 10 // Runs the setter, which assigns 10 / 2 (5) to the 'a' property
 console.log(o.b)
+5.删除属性
+（1）删除对象属性：
+// Creates a new object, myobj, with two properties, a and b.
+var myobj = new Object;
+myobj.a = 5;
+myobj.b = 12;
+
+// Removes the a property, leaving myobj with only the b property.
+delete myobj.a;
+console.log ("a" in myobj)
+（2）删除变量：g = 17;	delete g;
+
+第十一章 对象模型详解
+1.定义
+    javascript是基于原型prototypes的以对象为基础的语言，而不是基于class。
+2.创建继承关系
+（1）使用call和prototype定义继承：
+首先创建基类对象：
+function Employee() {
+  this.name = "";
+  this.dept = "general";
+}
+然后定义子对象：
+function Manager() {
+  Employee.call(this); //把Employee的上下文切换为Mananger的上下文
+  this.reports = [];
+}
+Manager.prototype = Object.create(Employee.prototype); //声明原型的实例化
+
+function WorkerBee() {
+  Employee.call(this);
+  this.projects = [];
+}
+WorkerBee.prototype = Object.create(Employee.prototype);
+（2）子类的子类定义：
+function SalesPerson() {
+   WorkerBee.call(this);
+   this.dept = "sales";
+   this.quota = 100;
+}
+SalesPerson.prototype = Object.create(WorkerBee.prototype);
+（3）创建对象：
+var jim = new Employee;
+var sally = new Manager;
+var mark = new WorkerBee;
+var fred = new SalesPerson;
+var jane = new Engineer;
+3.对象属性
+（1）对象实例化的内部过程：var mark = new WorkerBee。javscript看到new操作后自动创建一个常规对象，然后传递这个新对象作为关键字this的值到构造器函数，构造器函数显示的设置projects属性，隐式的设置内部的__proto__ property值给WorkerBee.prototype。__proto__ property决定了返回的原型链拥有哪些属性。
+（2）获取属性：当读取一个属性时，javscript首先检查对象中是否存在该属性，存在则直接返回属性值。如果不存在则继续检查原型链中是否存在该属性，存在则直接返回。不存在则认为对象没有该属性。
