@@ -64,3 +64,81 @@ var myArray = new Array("1", "2", "3");
 myArray = myArray.concat("a", "b", "c"); 
 // myArray is now ["1", "2", "3", "a", "b", "c"]
 （2）join：将数组转换为字符串，
+var myArray = new Array("Wind", "Rain", "Fire");
+var list = myArray.join(" - "); // list is "Wind - Rain - Fire"
+（3）push：将一个或多个元素添加到数组最后。
+var myArray = new Array("1", "2");
+myArray.push("3"); // myArray is now ["1", "2", "3"]
+（4）pop：将数组最后最后一个元素移除并返回。
+var myArray = new Array("1", "2", "3");
+var last = myArray.pop(); 
+// myArray is now ["1", "2"], last = "3“
+（5）shift：将数组第一个元素移除并返回。
+var myArray = new Array ("1", "2", "3");
+var first = myArray.shift(); 
+// myArray is now ["2", "3"], first is "1"
+（6）unshift：添加一个或多个元素到数组的头部，并返回最新数组。
+var myArray = new Array ("1", "2", "3");
+myArray.unshift("4", "5"); 
+// myArray becomes ["4", "5", "1", "2", "3"]
+（7）slice：提取数组的部分，并返回新数组。
+var myArray = new Array ("a", "b", "c", "d", "e");
+myArray = myArray.slice(1, 4); // starts at index 1 and extracts all elements
+                               // until index 3, returning [ "b", "c", "d"]
+（8）reverse：转换数组，第一个变成最后一个，最后一个变成第一个。
+var myArray = new Array ("1", "2", "3");
+myArray.reverse(); 
+// transposes the array so that myArray = [ "3", "2", "1" ]
+（9）sort简单排序：无参数。
+var myArray = new Array("Wind", "Rain", "Fire");
+myArray.sort(); 
+// sorts the array so that myArray = [ "Fire", "Rain", "Wind" ]
+（10）sort自定义排序：需要传递一个回调函数作为参数，对比两个元素排序。
+var sortFn = function(a, b){
+  if (a[a.length - 1] < b[b.length - 1]) return -1;
+  if (a[a.length - 1] > b[b.length - 1]) return 1;
+  if (a[a.length - 1] == b[b.length - 1]) return 0;
+}
+myArray.sort(sortFn); 
+// sorts the array so that myArray = ["Wind","Fire","Rain"]
+（11）indexOf：查找某个元素在数组中的索引。
+var a = ['a', 'b', 'a', 'b', 'a'];
+console.log(a.indexOf('b')); // logs 1
+// Now try again, starting from after the last match
+console.log(a.indexOf('b', 2)); // logs 3
+console.log(a.indexOf('z')); // logs -1, because 'z' was not found
+（12）lastIndexOf：从数组尾部开始查找。
+var a = ['a', 'b', 'c', 'd', 'a', 'b'];
+console.log(a.lastIndexOf('b')); // logs 5
+// Now try again, starting from before the last match
+console.log(a.lastIndexOf('b', 4)); // logs 1
+console.log(a.lastIndexOf('z')); // logs -1
+（13）forEach：遍历元素。
+var a = ['a', 'b', 'c'];
+a.forEach(function(element) { console.log(element);} ); 
+（14）map：根据回调函数返回一个新的数组。
+var a1 = ['a', 'b', 'c'];
+var a2 = a1.map(function(item) { return item.toUpperCase(); });
+console.log(a2); // logs A,B,C
+（15）filter：过滤元素。
+var a1 = ['a', 10, 'b', 20, 'c', 30];
+var a2 = a1.filter(function(item) { return typeof item === 'number'; });
+console.log(a2); // logs 10,20,30
+（16）every：所有元素匹配。
+function isNumber(value){
+  return typeof value === 'number';
+}
+var a1 = [1, 2, 3];
+console.log(a1.every(isNumber)); // logs true
+var a2 = [1, '2', 3];
+console.log(a2.every(isNumber)); // logs false
+（17）some：至少一个匹配。
+function isNumber(value){
+  return typeof value === 'number';
+}
+var a1 = [1, 2, 3];
+console.log(a1.some(isNumber)); // logs true
+var a2 = [1, '2', 3];
+console.log(a2.some(isNumber)); // logs true
+var a3 = ['1', '2', '3'];
+console.log(a3.some(isNumber)); // logs false
