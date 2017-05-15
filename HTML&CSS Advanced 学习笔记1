@@ -1,0 +1,306 @@
+第一章 Performance & Organization
+1.结构化
+（1）比较经典的样式架构
+# Base
+  – normalize.css
+  – layout.css
+  – typography.css
+
+# Components
+  – alerts.css
+  – buttons.css
+  – forms.css
+  – list.css
+  – nav.css
+  – tables.css
+
+# Modules
+  – aside.css
+  – footer.css
+  – header.css
+（2）Modular Architecture for CSS
+◾Base（核心元素style，覆盖默认样式）
+◾Layout（区别不同元素的size和grid样式）
+◾Module（个别别特页面样式）
+◾State（基于各种事件，提供不同的状态样式）
+◾Theme（基于skin、look、feel的样式）
+2.选择器驱动
+（1）保持剪短的选择器，浏览器会渲染路径上的每一个选择器。影响加载。也不够灵活。
+3.缩小或压缩文件
+（1）gzip压缩
+（2）图片压缩：Mac压缩工具为ImageOptim、Window压缩工具为PNGGauntlet。一个比较大的文件设置它的width和height并没有压缩文件。
+4.减少Http请求
+（1）结合相似文件。把CSS文件压缩成一个文件、把JS文件压缩成一个文件。
+（2）加载原则：CSS文件应该在head的开头加载，js文件应该在整个文件结尾body之前加载。这是因为css文件在加载的同时剩下的页面可也同时加载。JS文件同时只能加载一次，它会阻塞页面的加载。
+（3）图片拼切：使用一个合并的图片作为多个元素的背景。然后使用background-position来定位图片的显示位置。例如：
+ul {
+  margin: 0;
+  padding: 0;
+}
+li {
+  float: left;
+  list-style: none;
+  margin: 2px;
+}
+li a {
+  background: linear-gradient(#fff, #eee);
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  display: block;
+  padding: 3px;
+}
+li a:hover {
+  border-color: #999;
+}
+li span {
+  background: url("sprite.png") 0 0 no-repeat;
+  color: transparent;
+  display: block;
+  font: 0/0 a;
+  height: 16px;
+  width: 16px;
+}
+.italic {
+  background-position: -16px 0;
+}
+.underline {
+  background-position: -32px 0;
+}
+.size {
+  background-position: -48px 0;
+}
+.bullet {
+  background-position: -64px 0;
+}
+.number {
+  background-position: -80px 0;
+}
+.quote {
+  background-position: -96px 0;
+}
+.left {
+  background-position: -112px 0;
+}
+.center {
+  background-position: -128px 0;
+}
+.right {
+  background-position: -144px 0;
+}
+HTML:
+<ul>
+  <li><a href="#"><span class="bold">Bold Text</span></a></li>
+  <li><a href="#"><span class="italic">Italicize Text</span></a></li>
+  <li><a href="#"><span class="underline">Underline Text</span></a></li>
+  <li><a href="#"><span class="size">Size Text</span></a></li>
+  <li><a href="#"><span class="bullet">Bullet Text</span></a></li>
+  <li><a href="#"><span class="number">Number Text</span></a></li>
+  <li><a href="#"><span class="quote">Quote Text</span></a></li>
+  <li><a href="#"><span class="left">Left Align Text</span></a></li>
+  <li><a href="#"><span class="center">Center Align Text</span></a></li>
+  <li><a href="#"><span class="right">Right Align Text</span></a></li>
+</ul>
+图片地址：https://s3-us-west-2.amazonaws.com/s.cdpn.io/29841/sprite.png
+第二章 Detailed Positioning
+1.float浮动定位
+（1）什么是DOM？DOM（Document Object Model）为HTML和XML文档提供结构化展现
+（2）float比较经典的一个问题，先看下边的代码：
+HTML：
+<div class="box-set">
+  <figure class="box">Box 1</figure>
+  <figure class="box">Box 2</figure>
+  <figure class="box">Box 3</figure>
+</div>
+CSS：
+box-set {
+  background: #eaeaed;
+}
+.box {
+  background: #2db34a;
+  float: left;
+  margin: 1.858736059%;
+  width: 29.615861214%;
+}
+问题：class为box-set的div实际height为0，所以设置的背景色#eaeaed无效。解决这个问题有两个技术：overflow和clearfix。
+（3）overflow技术：设置父类元素的overflow属性：
+.box-set {
+  overflow: auto;
+}
+IE6同时需要设置height和width，例如为100%。另外如果设置了其他样式，例如设置box-shadow，展示内容可能会移除容器外。
+（4）Clearfix技术：代码如下：
+box-set:before,
+.box-set:after {
+  content: "";
+  display: table;
+}
+.box-set:after {
+  clear: both;
+}
+.box-set {
+  *zoom: 1;
+}
+说明：:before伪类阻止child的top margin移除.：after伪类阻止child的bottom margin移除，解决 Internet Explorer 6 and 7兼容。*zoom解决haslayout机制。
+2.Position属性
+（1）元素默认的position为static
+（2）relative位置：相对于元素属性为static的便宜位置。它不会导致其他元素的位置变化。
+（3）Absolute位置：元素从常规的流文档中移除，它的位置是相对于posistion为relative或者absolute的父类元素的偏移位置。
+（4）Fixed位置：它的位置相对于浏览器 browser viewport，位置不会随着浏览器的滚到而变化。但在IE6上不支持。
+（5）fixed head/foot：这里举个例子，实现footer停靠在浏览器视窗的最下边，不随着浏览器滚动条变化。
+HTML：
+<footer>Fixed Footer</footer>
+CSS：
+body {
+  background: #eaeaed;
+}
+footer {
+  background: #2db34a;
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
+}
+3.Z-Index Property
+（1）默认Z-Index位置：越排在dom的top就约在z方向的下边。
+（2）如果要设置Z-Index，必须设置元素的position为relative, absolute, or fixed。例如：
+CSS：
+.box-set {
+  background: #eaeaed;
+  height: 160px;
+  position: relative;
+}
+.box {
+  background: #2db34a;
+  border: 2px solid #ff7b29;
+  position: absolute;
+}
+.box-1 {
+  left: 10px;
+  top: 10px;
+}
+.box-2 {
+  bottom: 10px;
+  left: 70px;
+  z-index: 3;
+}
+.box-3 {
+  left: 130px;
+  top: 10px;
+  z-index: 2;
+}
+.box-4 {
+  bottom: 10px;
+  left: 190px;
+  z-index: 1;
+}
+HTML:
+div class="box-set">
+  <figure class="box box-1">Box 1</figure>
+  <figure class="box box-2">Box 2</figure>
+  <figure class="box box-3">Box 3</figure>
+  <figure class="box box-4">Box 4</figure>
+</div>
+第三章 Complex Selectors
+1.子元素选择器
+（1）子元素选择器包括后代选择器和直接孩子选择器
+（2）后代选择器通过空格分隔。例如：article h2,article中任何位置的h2都会被选择。
+（3）直接后代选择器通过“>”符号标记。例如article>p，只选择article的直接孩子为p的元素。
+2.同胞选择器
+（1）同胞元素，共享一个父元素
+（2）常规同胞选择器：通过“~”符号标记，并且必须排在第一个元素的后面。例如：
+CSS：
+h2 ~ p {...}
+HTML：
+<section>
+  <p>...</p>
+  <h2>...</h2>
+  <p>This paragraph will be selected</p>
+  <div>
+    <p>...</p>
+  </div>
+  <p>This paragraph will be selected</p>
+</section>
+说明：只选择了h2后面的同胞元素，之前的同胞元素不会被选择。
+（3）相邻同胞元素：使用“+”符号，第二个元素必须紧跟着第一个元素，并且同享一个父元素。例如：
+CSS：h2 + p {...}
+HTML：
+<section>
+  <p>...</p>
+  <h2>...</h2>
+  <p>This paragraph will be selected</p>
+  <div>
+    <p>...</p>
+  </div>
+  <p>...</p>
+</section>
+3.Attribute Selectors
+(1)属性呈现选择器：依据元素是否标记属性来查找。例如：a[target]。查找元素a并且有target属性的元素，不管target具体值。
+(2)属性相等选择器：赛选属性值相等的元素。例如：a[href="http://google.com/"] {...}，查找a元素并且a的href属性值为http://google.com/。
+（3）属性包含选择器：使用*号标记，属性的值包含提供的值。例如：a[href*="login"] {...}。
+（4）属性开始选择器：使用^标记，属性的值是提供的值为开始。例如：a[href^="https://"] {...}
+（5）属性结束选择器：使用$标记。属性的值以提供的值结尾。例如：a[href$=".pdf"] {...}
+（6）属性空格分隔选择器：使用~标记。例如a[rel~="tag"] {...}，<a href="#" rel="tag nofollow">...</a>能筛选到a元素。
+（7）属性连字符选择器：使用-标记。例如：a[lang|="en"] {...}，<a href="#" lang="en-US">...</a>。能筛选到a元素。
+4.伪类
+（1）链接伪类link和visited：一个链接已经被访问可用:link设置状态，在浏览器上已经访问了链接:visited。
+（2）用户活动伪类：:hover当鼠标移到元素上，:active用户和元素交互时，例如单击button时。:focus 获取焦点时。
+（3）用户接口状态伪类：:enabled, :disabled, :checked、:indeterminate 。:checked伪类提供给checkbox或者radio等。indeterminate是checkbox和radio状态既不是selected也不是unselected的状态。
+（4）结构化和位置伪类：
+	:first-child, :last-child, & :only-child。元素必须是父类的第一个元素或者最后一个元素，:only-child的权重比first-child和last-child都低。
+	:first-of-type, :last-of-type, & :only-of-type。元素只要在父类中存在即可查到。:only-of-type和:only-child相似。
+	:nth-child(n), :nth-last-child(n), :nth-of-type(n), and :nth-last-of-type(n)。数字伪类选择器。
+	:nth-child(n) & :nth-last-child(n)。例如:li:nth-child(3n)将选择li是3的倍数元素。例子如下：
+	CSS：li:nth-child(3n) {...}
+	HTML：
+	<ul>
+	  <li>...</li>
+	  <li>...</li>
+	  <li>This list item will be selected</li>
+	  <li>...</li>
+	  <li>...</li>
+	  <li>This list item will be selected</li>
+	</ul>
+	还可以写各种表达式：li:nth-child(2n+3)、li:nth-child(-n+4) 、li:nth-child(-2n+5)
+	:nth-last-child(n) ：和:nth-child(n)相似，只是统计统计的顺序相反。一个从上到下，一个从下到上。
+（5）目标伪类：:target伪类选择器选择URL路径中匹配的表示符。例如请求URL是：http://example.com/index.html#hello 。页面DOM中存在<section id="hello"> ，那么selction:target{}就会选中该section。在页面定位时非常有用。
+（6）空伪类： :empty。没有子元素、不包含文本的元素会被选中。例如：div:empty {...}
+	HTML：
+	<div>Hello</div>
+	<div><!-- Coming soon --></div><!-- This div will be selected -->
+	<div></div><!-- This div will be selected -->
+	<div> </div>
+	<div><strong></strong></div>
+（7）反选伪类：:not(x), 过滤掉被选中的元素，选择剩下的元素。例如p:not(.intro)选择不包含intro类的p元素。:not(div)选择非div元素。例如：
+	CSS：
+	div:not(.awesome) {...}
+	:not(div) {...}
+	HTML：
+	<div>This div will be selected</div>
+	<div class="awesome">...</div>
+	<section>This section will be selected</section>
+	<section class="awesome">This section will be selected</section>
+5.伪类元素
+（1）文本化伪类元素：
+	:first-letter，识别元素文本的第一个字母。
+	:first-line，识别元素文本的第一行。
+（2）生成内容伪类元素：:before、:after，围绕选中的元素创建inline级别的伪元素。这些伪元素是嵌套在选中的元素中，而不是后面或者前面。不是所有的浏览器都支持这些为元素。例子：
+CSS：
+a:after {
+  color: #9799a7;
+  content: " (" attr(href) ")";
+  font-size: 11px;
+}
+HTML：
+<a href="http://google.com/">Search the Web</a>
+<a href="http://learn.shayhowe.com/">Learn How to Build Websites</a>
+（3）片段伪元素：::selection。识别文档中被选择或者高亮的部分。但只能设置color, background, background-color, and text-shadow属性。background设置成图片直接被忽略。例如，我选中html中的一些本文元素然后设置背景色。
+CSS：
+::-moz-selection {
+    background: #ff7b29;
+}
+::selection {
+  background: #ff7b29;
+}
+6.浏览器对伪类的兼容性：可查看http://tools.css3.info/selectors-test/test.html检查兼容性。
+
+看到：http://learn.shayhowe.com/advanced-html-css/complex-selectors/ 的 Pseudo-classes Overview
+
