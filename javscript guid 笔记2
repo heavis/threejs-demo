@@ -142,3 +142,111 @@ var a2 = [1, '2', 3];
 console.log(a2.some(isNumber)); // logs true
 var a3 = ['1', '2', '3'];
 console.log(a3.some(isNumber)); // logs false
+第九章 字典集合
+1.Maps
+（1）Map对象：字典对象，使用[Key/Value]形式。例如：
+var sayings = new Map();
+sayings.set("dog", "woof");
+sayings.set("cat", "meow");
+sayings.set("elephant", "toot");
+sayings.size; // 3
+sayings.get("fox"); // undefined
+sayings.has("bird"); // false
+sayings.delete("dog");
+
+for (var [key, value] of sayings) {
+  console.log(key + " goes " + value);
+}
+（2）Map对象方法：set、size、get、has、delete。
+（3）遍历Map方法：使用for... of遍历。例如：
+for (var [key, value] of sayings) {
+  console.log(key + " goes " + value);
+}
+2.Sets
+（1）Set对象：数据集合，按照插入顺序迭代值，一个值只能插入一次。例如：
+var mySet = new Set();
+mySet.add(1);
+mySet.add("some text");
+mySet.add("foo");
+
+mySet.has(1); // true
+mySet.delete("foo");
+mySet.size; // 2
+
+for (let item of mySet) console.log(item);
+// 1
+// "some text"
+（2）Set和Array转换：Set转换为Array使用Array.from(mySet)，Array转换为Set使用mySet2 = new Set([1,2,3,4]);
+
+第十章 操作对象
+1.对象和属性
+（1）对象属性的两种访问形式：objectName.propertyName、object[prpertyName]。例如：
+var myCar = new Object();
+myCar.make = "Ford";
+//或者 myCar["make"] = “Ford”;
+（2）迭代对象属性：使用(for...in)迭代对象的所有属性。例如：
+function showProps(obj, objName) {
+  var result = "";
+  for (var i in obj) {
+    if (obj.hasOwnProperty(i)) {
+      result += objName + "." + i + " = " + obj[i] + "\n";
+    }
+  }
+  return result;
+}
+showProps(myCar, "myCar") 
+2、创建对象
+（1）使用对象初始化器。例如：
+var obj = { property_1:   value_1,   // property_# may be an identifier...
+            2:            value_2,   // or a number...
+            // ...,
+            "property n": value_n }; // or a string
+（2）使用constructor 构造函数。例如：
+function Car(make, model, year) {
+  this.make = make;
+  this.model = model;
+  this.year = year;
+}
+创建对象：var mycar = new Car("Eagle", "Talon TSi", 1993);
+（3）使用Ojbect.create创建对象：例如使用对象初始化器创建一个变量，然后Object.create()重新创建一个新的具有相同属性的对象。例如：
+// Animal properties and method encapsulation
+var Animal = {
+  type: "Invertebrates", // Default value of properties
+  displayType : function() {  // Method which will display type of Animal
+    console.log(this.type);
+  }
+}
+
+// Create new animal type called animal1 
+var animal1 = Object.create(Animal);
+animal1.displayType(); // Output:Invertebrates
+
+// Create new animal type called Fishes
+var fish = Object.create(Animal);
+fish.type = "Fishes";
+fish.displayType(); // Output:Fishes
+3.为对象使用this关键字
+（1）form表单中的this：this关键字表示的是当前对象的父表单。例如：
+<form name="myForm">
+<p><label>Form name:<input type="text" name="text1" value="Beluga"></label>
+<p><input name="button1" type="button" value="Show Form Name"
+     onclick="this.form.text1.value = this.form.name">
+</p>
+</form>
+4.定义getters和setters
+（1）使用Object.defineProperty为对象定义属性：例如我们为时间对象Date定义year属性。属性定义后所有创建的Date对象都拥有该属性。例如：
+var d = Date.prototype;
+Object.defineProperty(d, "year", {
+  get: function() { return this.getFullYear() },
+  set: function(y) { this.setFullYear(y) }
+});
+（2）使用Object.defineProperty为对象已经存在的属性定义get和set：
+var o = { a:0 }
+
+Object.defineProperties(o, {
+    "b": { get: function () { return this.a + 1; } },
+    "c": { set: function (x) { this.a = x / 2; } }
+});
+
+o.c = 10 // Runs the setter, which assigns 10 / 2 (5) to the 'a' property
+console.log(o.b)
