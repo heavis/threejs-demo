@@ -1,0 +1,267 @@
+第二章 重新介绍Javascript
+1.对象类型：javscript包含的对象类型有
+Number
+String
+Boolean
+Symbol（Edition 6）
+Object
+    Function
+    Array
+    Date
+    RegExp
+null
+undefined
+2.Number
+（1）parseInt(argument1, argument2)：第二个参数是可选的，表示数据是那种数据进制，建议总是提供，例如parseInt("010", 10)表示字符串“010”是10进制。
+（2）parseInt转换"010":在老版本j中，perseInt识别字符串是否以0开始，是则把字符串当做八进制。但从2013年以后，这个规则已经抛弃了。例如：
+parseInt("010"); //老版本IE7运行结果是8， 新版本运行结果是10
+（3）parseInt返回NaN：对非数字的字符串转换后返回NaN。
+（4）判断NaN：通过isNaN方法判断转换的结果是否为NaN。
+（5）isFinite：判断数字是否是有穷数，我们知道Javscript包含两个无穷数Infinity和-Infinity，我们可通过isFnite判断。例如：
+isFinite(1/0); // false
+isFinite(-Infinity); // false
+isFinite(NaN); // false
+3.Boolean类型
+（1）判断为false的情况：false、0、""、NaN、null、undefined。
+（2）判断为true的情况：除第一种情况外其他都为true。例如：
+Boolean("");  // false
+Boolean(234); // true
+4.操作器
+（1）字符串和数组相“+”：字符串加数组结果为字符串，数字加字符串时先数组相加然后连接为字符串，例如：
+"3" + 4 + 5;  // "345"
+ 3 + 4 + "5"; // "75"
+ （2）==操作符：==会先进行类型强制转换，然后再判断。例如下面代码结果都是true。是因为先把“123”转换为数组123，然后再进行判断。
+ 123 == "123"; // true
+1 == true; // true
+ （3）===操作符：不会进行类型转换，所以不同类型的值判断结果为false。例如：
+ 123 === "123"; // false
+1 === true;    // false
+2.Function
+（1）arguments：使用arguments可实现可变参数。例如下面的add加法函数，可对传递的任意多个数组相加并返回结果：
+function add() {
+  var sum = 0;
+  for (var i = 0, j = arguments.length; i < j; i++) {
+    sum += arguments[i];
+  }
+  return sum;
+}
+
+add(2, 3, 4, 5); // 14
+（2）apply：如果我们给add传递的是一个数组怎么办？apply为我们提供了把数组作为参数的可能。如下代码：
+avg.apply(null, [2, 3, 4, 5]); // 3.5
+（3）函数递归的使用；下面代码中有一个counter函数，它只在函数自身区域内有效。通过这样的写法可以很方便的实现递归。代码：
+var charsInBody = (function counter(elm) {
+  if (elm.nodeType == 3) { // TEXT_NODE
+    return elm.nodeValue.length;
+  }
+  var count = 0;
+  for (var i = 0, child; child = elm.childNodes[i]; i++) {
+    count += counter(child);
+  }
+  return count;
+})(document.body)
+
+5.自定义Object
+（1）对象创建方法1：下面的代码虽然能正常运行，但特别丑，我们再全局命名空间中定义了很多方法，而且这些方式一般都是对象使用。
+function makePerson(first, last) {
+  return {
+    first: first,
+    last: last
+  };
+}
+function personFullName(person) {
+  return person.first + ' ' + person.last;
+}
+function personFullNameReversed(person) {
+  return person.last + ', ' + person.first;
+}
+
+s = makePerson("Simon", "Willison");
+personFullName(s); // "Simon Willison"
+personFullNameReversed(s); // "Willison, Simon“
+（2）创建对象方法2：下面的代码使用了this关键字，this表示当前对象，如果我们执行代码var fullName = s.fullName;fullName()，将会输出"undefined undefined"。这是因为单独执行fullName()，函数中的this代表了全局对象。
+function makePerson(first, last) {
+  return {
+    first: first,
+    last: last,
+    fullName: function() {
+      return this.first + ' ' + this.last;
+    },
+    fullNameReversed: function() {
+      return this.last + ', ' + this.first;
+    }
+  };
+}
+
+s = makePerson("Simon", "Willison")
+s.fullName(); // "Simon Willison"
+s.fullNameReversed(); // "Willison, Simon"
+（3）创建对象方法3：使用new关键字创建对象，函数被用来new方式创建的话，一般都是把函数名首字母大写，当着对象构造函数使用。使用new
+方式虽然改善了代码，但还是有单独使用fullName()陷阱。
+function Person(first, last) {
+  this.first = first;
+  this.last = last;
+  this.fullName = function() {
+    return this.first + ' ' + this.last;
+  };
+  this.fullNameReversed = function() {
+    return this.last + ', ' + this.first;
+  };
+}
+var s = new Person("Simon", "Willison");
+（4）创建对象方法4：方法3一方面有fullName（）陷阱，另一方面每次创建对象是都会额外创建两个函数。所以，我们可以把两发函数提取到外部去定义，这样每次创建对象时都不会重新创建两个函数了。代码如下：
+function personFullName() {
+  return this.first + ' ' + this.last;
+}
+function personFullNameReversed() {
+  return this.last + ', ' + this.first;
+}
+function Person(first, last) {
+  this.first = first;
+  this.last = last;
+  this.fullName = personFullName;
+  this.fullNameReversed = personFullNameReversed;
+}
+（5）创建对象方法5：方法4还是在全局对象中创建了两个函数，我们可以通过原型链的形式定义这两个函数。
+Person.prototype.fullName = function fullName() {
+  return this.first + ' ' + this.last;
+};
+Person.prototype.fullNameReversed = function fullNameReversed() {
+  return this.last + ', ' + this.first;
+};
+
+第三章 相等判断
+1.值判断方式
+（1）严格判断“====”
+（2）简单判断“==”：A == B，首先把A转化成和B同类型，然后调用 “===”对两个同类型的值做判断。
+（3）Object.is:和“===”相似，但对NaN、-0、+0做了特殊处理，例如Object.is(NaN, NaN)为true，而“===”判断为false。
+（4）判断列表： 查看https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness 中的 A model for understanding equality comparisons?部分的列表，看看三种判断的区别。
+第四章 闭包
+1.闭包定义
+（1）定义：一般一个本地变量的生命周期只存在于函数执行期间，一点makeFunc执行完成，name应该被释放。但实际不是这样，这是由于myFunc已经变成了一个闭包，它拥有外部函数makeFunc的this环境，所以myFunc能访问到name变量。
+function makeFunc() {
+  var name = "Mozilla";
+  function displayName() {
+    alert(name);
+  }
+  return displayName;
+}
+
+var myFunc = makeFunc();
+myFunc();
+（2）实践：下面的代码就是闭包的实践，makeSizer返回一个无参函数，这个无参函数是一个闭包函数，包含了外部函数makeSizer的上下文环境变量size。
+HTML:
+<a href="#" id="size-12">12</a>
+<a href="#" id="size-14">14</a>
+<a href="#" id="size-16">16</a>
+JS:
+function makeSizer(size) {
+  return function() {
+    document.body.style.fontSize = size + 'px';
+  };
+}
+
+var size12 = makeSizer(12);
+var size14 = makeSizer(14);
+var size16 = makeSizer(16);
+document.getElementById('size-12').onclick = size12;
+document.getElementById('size-14').onclick = size14;
+document.getElementById('size-16').onclick = size16
+2.闭包使用
+（1）模拟使用方法：下面的代码定义了匿名函数，并且在定义的时候就被执行了。这个匿名包含两个私有项：变量privateCounter和函数changeBy。这两个项只能被三个公共函数increment、decrement、value访问。
+var counter = (function() {
+  var privateCounter = 0;
+  function changeBy(val) {
+    privateCounter += val;
+  }
+  return {
+    increment: function() {
+      changeBy(1);
+    },
+    decrement: function() {
+      changeBy(-1);
+    },
+    value: function() {
+      return privateCounter;
+    }
+  };   
+})();
+
+console.log(counter.value()); // logs 0
+counter.increment();
+counter.increment();
+console.log(counter.value()); // logs 2
+counter.decrement();
+console.log(counter.value()); // logs 1
+（2）闭包的错误使用：下面的代码执行后，三个输入框获取焦点时help提示信息都是最后一条（Your age (you must be over 16)）。和我们预期效果不一样，
+下面的JS代码随着三次循环创建了三个闭包，每个闭包都拥有相同的上下文环境（setupHelp上下文环境）。当onfocus执行时，上下文环境中的for循环已经执行到最后一项了。所有都拥有相同的item。
+HTML：
+<p id="help">Helpful notes will appear here</p>
+<p>E-mail: <input type="text" id="email" name="email"></p>
+<p>Name: <input type="text" id="name" name="name"></p>
+<p>Age: <input type="text" id="age" name="age"></p>
+JS：
+function showHelp(help) {
+  document.getElementById('help').innerHTML = help;
+}
+
+function setupHelp() {
+  var helpText = [
+      {'id': 'email', 'help': 'Your e-mail address'},
+      {'id': 'name', 'help': 'Your full name'},
+      {'id': 'age', 'help': 'Your age (you must be over 16)'}
+    ];
+
+  for (var i = 0; i < helpText.length; i++) {
+    var item = helpText[i];
+    document.getElementById(item.id).onfocus = function() {
+      showHelp(item.help);
+    }
+  }
+}
+
+setupHelp();
+（3）解决（2）中的错误：我们必须为每个闭包创建独立的上下文环境，通过函数工厂可以创建独立的作用域，
+JS代码：
+function makeHelpCallback(help){
+	return function(){showHelp(help);};
+}
+
+
+function setupHelp() {
+  var helpText = [
+	  {'id': 'email', 'help': 'Your e-mail address'},
+	  {'id': 'name', 'help': 'Your full name'},
+	  {'id': 'age', 'help': 'Your age (you must be over 16)'}
+	];
+
+  for (var i = 0; i < helpText.length; i++) {
+	var item = helpText[i];
+	document.getElementById(item.id).onfocus = makeHelpCallback(item.help);
+  }
+}
+（4）闭包代码优化-一般代码：
+function MyObject(name, message) {
+  this.name = name.toString();
+  this.message = message.toString();
+}
+MyObject.prototype.getName = function() {
+  return this.name;
+};
+MyObject.prototype.getMessage = function() {
+  return this.message;
+};
+（5）闭包代码优化-漂亮的代码：
+function MyObject(name, message) {
+    this.name = name.toString();
+    this.message = message.toString();
+}
+(function() {
+    this.getName = function() {
+        return this.name;
+    };
+    this.getMessage = function() {
+        return this.message;
+    };
+}).call(MyObject.prototype);
+看到：https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures
