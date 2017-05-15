@@ -310,4 +310,48 @@ function multiply(multiplier, ...theArgs) {
 
 var arr = multiply(2, 1, 2, 3);
 console.log(arr); // [2, 4, 6]123456
+5.this上下文
+（1）每个函数都有一个this表示自身，所以下面的调用将会出错：
+function Person() {
+  // The Person() constructor defines `this` as itself.
+  this.age = 0;
 
+  setInterval(function growUp() {
+    // In nonstrict mode, the growUp() function defines `this` 
+    // as the global object, which is different from the `this`
+    // defined by the Person() constructor.
+    this.age++;
+  }, 1000);
+}
+
+var p = new Person();
+（2）this在函数闭包中的解决方案：
+function Person() {
+  var self = this; // Some choose `that` instead of `self`. 
+                   // Choose one and be consistent.
+  self.age = 0;
+
+  setInterval(function growUp() {
+    // The callback refers to the `self` variable of which
+    // the value is the expected object.
+    self.age++;
+  }, 1000);
+}
+第五章 表达式和操作
+1.比较操作符
+（1）“===”：类型和值都必须相等。
+（2）“！==”：类型相同但值不同或者类型不相同。
+2.算数操作符
+（1）“%”：求余。
+（2）“**”：指数积。2**3 = 8,10 ** 1 = 0.1
+3.逻辑操作
+（1）“&&”：与。
+（2）“||”：或。
+（3）“！”：非。
+4.一元操作符
+（1）delete：删除一个对象、对象属性、数组某个索引的值。语法如下：
+delete objectName;
+delete objectName.property; //删除后，objectName.property为undefined。
+delete objectName[index];
+delete property; // legal only within a with statement
+（2）delete只能删除隐式变量，不能删除var定义变量。但可以删除var变量对象的属性。如下所示：
