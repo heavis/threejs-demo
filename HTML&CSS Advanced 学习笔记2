@@ -1,0 +1,129 @@
+第四章 Responsive Web Design
+1.灵活的层次设计
+（1）灵活的grid：在设计图层的大小时我们有一个公式：target ÷ context = result，目标元素的设计尺寸/父容器的设计尺寸=结果，为百分比。例如：
+HTML：<div class="container">
+  <section>...</section>
+  <aside>...</aside>
+</div>
+CSS：.container {
+  width: 538px;
+}
+section,
+aside {
+  margin: 10px;
+}
+section {
+  float: left;
+  width: 340px;
+}
+aside {
+  float: right;
+  width: 158px;
+}
+现在通过公司转换：
+section,
+aside {
+  margin: 1.858736059%; /*  10px ÷ 538px = .018587361 */
+}
+section {
+  float: left;
+  width: 63.197026%;    /* 340px ÷ 538px = .63197026 */   
+}
+aside {
+  float: right;
+  width: 29.3680297%;  /* 158px ÷ 538px = .293680297 */
+}
+通过转换为百分比，可适应父容器尺寸的变化。
+2.Media查询
+（1）初始化媒介查询：可在存在的style sheet中使用@media 来查看。导入一个新的样式使用@import。一般推荐使用@media避免多次http请求。例如
+通过HTML导入：link href="styles.css" rel="stylesheet" media="all and (max-width: 1024px)">
+通过CSS导入：/* @media Rule */
+@media all and (max-width: 1024px) {...}
+/* @import Rule */
+@import url(styles.css) all and (max-width: 1024px) {...}
+（2）常用的媒介类型包括： all, screen, print, tv, and braille。
+（3）媒介查询表达式：操作符包括and, not, only。例如
+	查询所有媒介的wide在800到1024之间的媒介类型：@media all and (min-width: 800px) and (max-width: 1024px) {...}
+	识别任意类型，除了单独指定的：@media not screen and (color) {...}。识别任何没有color screen的媒介类型。
+	only符号：@media only screen and (orientation: portrait) {...}。
+（4）Height & Width 媒体功能：是最常用的区分媒介设备的方法，可通过height, width, device-height, and device-width获取媒介的尺寸。并且每个都可有min和max前缀。
+	例如：@media all and (min-width: 320px) and (max-width: 780px) {...}
+（5）Orientation 媒介功能:通过landscape 或者 portrait区分排列形式。landscape是表示宽比高大的媒介，portrait区分高比宽大的媒介。
+	例如：@media all and (orientation: landscape) {...}
+（6）Aspect Ratio 媒介功能：使用aspect-ratio and device-aspect-ratio 区分width/height的比率。
+	例如：@media all and (min-device-aspect-ratio: 16/9) {...}
+（7）分辨率媒介功能：识别媒介的分辨率。
+	例如：@media print and (min-resolution: 300dpi) {...}
+
+（8）兼容性：媒介功能在IE8或以下的版本都不支持。可通过Respond.js 或者MediaQueries.js解决。
+（9）使用例子：设置section和aside的width和float，但是当媒介的max-width:不超过420时，float:non;width:auto；
+section{
+	float: left;
+	width: 63.197026%; /* 340px / 538px = 0.63197026   */
+}
+
+aside{
+	float: right;
+	width: 29.3680297%; /* 158px / 538px = 0.293680297   */
+}
+@media all and (max-width: 420px){
+	section, aside{
+		float: none;
+		width: auto;
+	}
+}
+3.Mobile First
+（1）目前media query使用比较流行的就是mobile first。设计默认的样式提供给比较小的视窗的设备。然后使用media query增加样式到视窗比较大的设备。
+（2）设计代码大概如下：
+* Default styles first then media queries */
+@media screen and (min-width: 400px)  {...}
+@media screen and (min-width: 600px)  {...}
+@media screen and (min-width: 1000px) {...}
+@media screen and (min-width: 1400px) {...}
+（3）下载不必要的资源文件应该通过media queries阻止。例如在mobile上避免CSS3的shadow、gradient、transform、animation等。例如：
+/* Default media */
+body {
+  background: #ddd;
+}
+/* Media for larger devices */
+@media screen and (min-width: 800px) {
+  body {
+    background-image: url("bg.png") 50% 50% no-repeat;
+  }
+}
+4.Viewport
+（1）Viewport Height & Width：使用viewport 的meta标记设置height和width值来定义viewport的height和width。
+（2）<meta name="viewport" content="width=device-width">。width将继承device-wdith的值。
+（3）Viewport Scale：使用minimum-scale, maximum-scale, initial-scale, and user-scalable定义网站的显示比例。
+（3）Viewport Scale:initial-scale的值范围为0-10,网站的initial-scale 应该始终是1.minimum-scale要设计比initial-scale小，maximum-scale要设计比initial-scale大，并且都在0到10.
+（4）Viewport Scale注意项：minimum-scale和maximum-scale不应该设置成和initial-scale一样。user-scalable:no将禁用zooming功能。通常不能设置user-scalable为no
+	例如：<meta name="viewport" content="user-scalable=yes">
+（5）组合Viewport的值：<meta name="viewport" content="width=device-width, initial-scale=1">。
+（6）Viewport的CSS写法：目前只有部分浏览器支持@viewport 规则。例如：
+@viewport {
+  width: device-width;
+  zoom: 1;
+}
+5.灵活的media
+（1）设置media可缩放的快速方法：
+img, video, canvas {
+  max-width: 100%;
+}
+（2）灵活嵌套的Media：max-width并不支持所有的media，像iframes和embedded Media。综合例子：
+HTML：<figure>
+  <iframe src="https://www.youtube.com/embed/4Fqg43ozz7A"></iframe>
+</figure>
+CSS：
+figure {
+  height: 0;
+  padding-bottom: 56.25%; /* 16:9 */
+  position: relative;
+  width: 100%;
+}
+iframe {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
