@@ -1,0 +1,44 @@
+第十二章 元数据编程
+1.Proxies
+（1）Proxy功能：允许用户中断某些操作或者实现某些自定义行为。例如get对象属性，如下面代码：
+var handler = {
+  get: function(target, name){
+    return name in target ? target[name] : 42;
+}};
+var p = new Proxy({}, handler);
+p.a = 1;
+console.log(p.a, p.b); // 1, 42
+说明：如果对象不包含属性b，则返回42，如果包含了属性a，则返回属性的值。
+（2）技术点：handler，对象封装处理；traps，提供访问属性的方法；target，代理初始化的对象，
+2.可撤回的代理Revocable 
+（1）Proxy.revocable方法：通过该方法创建的代理可通过revoke方法撤回。例如：
+var revocable = Proxy.revocable({}, {
+  get: function(target, name) {
+    return "[[" + name + "]]";
+  }
+});
+var proxy = revocable.proxy;
+console.log(proxy.foo); // "[[foo]]"
+
+revocable.revoke();
+
+console.log(proxy.foo); // TypeError is thrown
+proxy.foo = 1           // TypeError again
+delete proxy.foo;       // still TypeError
+typeof proxy            
+3.Reflection
+（1）has方法：判断对象是否包含某个属性，例如：Reflect.has(Object, "assign"); // true。
+（2）ES5中的Function.prototype.apply方法：在ES5中使用Function.prototype.apply()方法，提供this值和参数调用某个函数。例如：
+Function.prototype.apply.call(Math.floor, undefined, [1.75]);
+（3）ES6中的Reflect.apply方法：比ES5简洁。例如：
+Reflect.apply(Math.floor, undefined, [1.75]); 
+// 1;
+
+Reflect.apply(String.fromCharCode, undefined, [104, 101, 108, 108, 111]);
+// "hello"
+
+Reflect.apply(RegExp.prototype.exec, /ab/, ["confabulation"]).index;
+// 4
+
+Reflect.apply("".charAt, "ponies", [3]);
+// "i"
