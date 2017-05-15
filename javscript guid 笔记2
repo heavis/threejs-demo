@@ -300,3 +300,56 @@ var jane = new Engineer;
 3.对象属性
 （1）对象实例化的内部过程：var mark = new WorkerBee。javscript看到new操作后自动创建一个常规对象，然后传递这个新对象作为关键字this的值到构造器函数，构造器函数显示的设置projects属性，隐式的设置内部的__proto__ property值给WorkerBee.prototype。__proto__ property决定了返回的原型链拥有哪些属性。
 （2）获取属性：当读取一个属性时，javscript首先检查对象中是否存在该属性，存在则直接返回属性值。如果不存在则继续检查原型链中是否存在该属性，存在则直接返回。不存在则认为对象没有该属性。
+4.复杂的构造函数
+（1）给构造函数传递参数：构造函数传递的参数一般都要做判断。例如判断传递的name是否定义： this.name = name || ""。例如：
+function Employee (name, dept) {
+  this.name = name || "";
+  this.dept = dept || "general";
+}
+function WorkerBee (projs) {
+ 
+ this.projects = projs || [];
+}
+WorkerBee.prototype = new Employee;
+（2）另外一种实现继承的方法：通过定义一个属性，设置值为父对象，然后执行属性方法。
+function Engineer (name, projs, mach) {
+  this.base = WorkerBee;
+  this.base(name, "engineering", projs);
+  this.machine = mach || "";
+}
+Engineer.prototype = new WorkerBee;
+var jane = new Engineer("Doe, Jane", ["navigator", "javascript"], "belau");
+Employee.prototype.specialty = "none";
+定义了一个属性base，值为WorerBee函数，然后传递参数调用base方法。其实就是把当前上下文this传入到WorkerBee中设置属性，这样设置后Engineer也拥有了这些属性。
+var jane = new Engineer("Doe, Jane", ["navigator", "javascript"], "belau");
+（3）使用call、apply实现继承：
+function Engineer (name, projs, mach) {
+  WorkerBee.call(this, name, "engineering", projs);
+  this.machine = mach || "";
+}
+（4）在运行时修改对象属性值并运用到所有实例化对象中：需要在运行时修改对象属性值的属性，属性定义需要通过原型模式定义：
+function Employee () {
+  this.name = "";
+  this.dept = "general";
+}
+
+function WorkerBee () {
+  this.projects = [];
+}
+WorkerBee.prototype = new Employee;
+实例化：var amy = new WorkerBee;
+此时，amy.name值为""。如果我们为Employee的原型链添加name属性：Employee.prototype.name = "Unknown"。但amy的name值还是为“”。为了解决这个问题，我们需要通过原型模式定义name属性。例如：
+function Employee () {
+  this.dept = "general";
+}
+Employee.prototype.name = "";
+
+function WorkerBee () {
+  this.projects = [];
+}
+WorkerBee.prototype = new Employee;
+
+var amy = new WorkerBee;
+
+Employee.prototype.name = "Unknown";
+此时，amy.name值为“Unknown”。
