@@ -1,0 +1,421 @@
+第五章 Preprocessors
+1.预处理技术
+（1）预处理是一个编程模式，目前比较流行的预处理包括Haml和Sass。Haml处理Html、Sass处理CSS。
+（2）Compass框架：在引入Haml和Sass这些技术的同时，也提出了对这些技术支持的框架，例如最流行的Compass。
+2.Haml预处理技术
+（1）安装：Haml需要Ruby工具才能把标记编译为HTML，所以首先需要确认系统安装Ruby。通过http://rubyinstaller.org/可查看安装放方法。安装后在命令行执行gem install haml。
+（2）使用：编写的Haml标记语言应该保存为.haml文件，然后通过：haml index.haml index.html转换为Html文件。可通过haml --help 查看帮助。
+（3）帮助：http://haml.info/
+（4）例子：请查看http://learn.shayhowe.com/advanced-html-css/preprocessors/#haml。
+3.Sass预处理技术
+（1）安装Saas文件需要Ruby工具才能编译，所以首选需安装Ruby。通过http://rubyinstaller.org/可查看安装放方法。安装后再命令行执行gem install sass安装sass。
+（2）使用：编写的Haml标记语言应该保存为.sass或者.scss文件。然后通过：sass styles.sass styles.css转换为css文件。
+（3）检查版本：每次编译时可查看脚本是否有更新，更新后才编译：sass --watch styles.sass:styles.css。
+（4）多文件编译：编译路径下的所有sass文件：sass --watch assets/sass:public/css
+（5）sass和scss之间的转换：
+# Convert Sass to SCSS
+sass-convert styles.sass styles.scss
+# Convert SCSS to Sass
+sass-convert styles.scss styles.sass
+（6）例子：请查看http://learn.shayhowe.com/advanced-html-css/preprocessors/#scss-sass。
+第六章 jQuery
+1.JavaScript介绍
+（1）HTML、CSS、Javascript：HTML提供页面结构、CSS提供页面展现、Javascript提供行为。
+（2）js添加位置：js一般添加在</body>之前。在页面加载完后加载js，因为在同一时间页面只能处理一个JS文件。
+（3）Values：包含字符串、bool值、numbers、undefined、null以及其他的functions 和objects。
+（4）变量命名：必须以字母、_、$符号开始；不能以数字开头；不能使用连字符(-);通常使用camelCase命名规则。
+（5）数组：var array = [];获取第二个选项：[1]。例如：var school = ['Austin', 'Chicago', 'Portland'];
+2.Jquery介绍
+（1）加载JQuery
+$(document).ready(function(event){
+	//....
+});
+（2）This选择关键字
+$('div').click(function(event){ 
+  $(this);
+});
+说明：this表示当前筛选的div。
+（3）排除选择
+$('div').not('.type, .collection');
+说明：选择div并且它的class没有包含type和collection。
+（4）筛选方法
+Filter:
+eq() 
+◾ .filter() 
+◾ .first() 
+◾ .has() 
+◾ .is() 
+◾ .last() 
+◾ .map() 
+◾ .not() 
+◾ .slice() 
+Miscellaneous Traversing:
+add() 
+◾ .andSelf() 
+◾ .contents() 
+◾ .end()
+Dom Tree:
+children() 
+◾ .closest() 
+◾ .find() 
+◾ .next() 
+◾ .nextAll() 
+◾ .nextUntil() 
+◾ .offsetParent() 
+◾ .parent() 
+◾ .parents() 
+◾ .parentsUntil() 
+◾ .prev() 
+◾ .prevAll() 
+◾ .prevUntil() 
+◾ .siblings() 
+(5)Get&Set
+$('img').attr('alt');
+$('img').attr('alt', 'Wild kangaroo');
+（6）属性操作方法
+addClass() 
+◾ .attr() 
+◾ .hasClass() 
+◾ .prop() 
+◾ .removeAttr() 
+◾ .removeClass() 
+◾ .removeProp() 
+◾ .toggleClass() 
+◾ .val() 
+(7)Style方法
+◾ .css() 
+◾ .height() 
+◾ .innerHeight() 
+◾ .innerWidth() 
+◾ .offset() 
+◾ .outerHeight() 
+◾ .outerWidth() 
+◾ .position() 
+◾ .scrollLeft() 
+◾ .scrollTop() 
+◾ .width() 
+(8)Dom操作
+.after() 
+◾ .append() 
+◾ .appendTo() 
+◾ .before() 
+◾ .clone() 
+◾ .detach() 从DOM中删除所有匹配的元素。
+这个方法不会把匹配的元素从jQuery对象中删除，因而可以在将来再使用这些匹配的元素
+◾ .empty() 
+◾ .html() 
+◾ .insertAfter() 
+◾ .insertBefore() 
+◾ .prepend()  在当前元素的最前面插入
+◾ .prependTo() 
+◾ .remove()  从DOM中删除所有匹配的元素。这个方法不会把匹配的元素从jQuery对象中删除，因而可以在将来再使用这些匹配的元素。但除了这个元素本身得以保留之外，其他的比如绑定的事件，附加的数据等都会被移除。
+◾ .replaceAll() 
+◾ .replaceWith() 
+◾ .text() 
+◾ .unwrap() 
+◾ .wrap() 把所有匹配的元素用其他元素的结构化标记包裹起来。
+◾ .wrapAll() 
+◾ .wrapInner() 
+3.Event事件处理
+（1）浏览器事件
+resize() 
+scroll() 
+（2）文档加载事件
+ready()
+（3）附加事件
+.off()  在选择元素上移除一个或多个事件的事件处理函数。
+◾ .on() 
+◾ .one() 为每一个匹配元素的特定事件（像click）绑定一个一次性的事件处理函数。
+◾ jQuery.proxy() 
+◾ .trigger() 触发器
+◾ .triggerHandler() 
+◾ .unbind() 
+◾ .undelegate()
+（4）事件对象
+event.currentTarget 
+◾ event.preventDefault()  例如，在执行这个方法后，如果点击一个锚点，就不会让浏览器跳转到新的 URL 去了。我们可以用 event.isDefaultPrevented() 来确定这个方法是否(在那个事件对象上)调用过了。
+◾ event.stopPropagation() 
+◾ event.target 
+◾ event.type 
+（5）表单事件
+blur()  当元素失去焦点时触发 blur 事件。
+◾ .change() 当元素的值发生改变时，会发生 change 事件。该事件仅适用于文本域（text field），以及 textarea 和 select 元素。
+◾ .focus() 
+◾ .select() 
+◾ .submit() 
+4.动画效果
+（1）参数说明：
+duration动画周期，可以是关键字fast、slow或者毫秒数字。
+easing动画舒缓方式，包括swing和linear，默认是swing开始和结束慢中间快，linear线性执行。
+callback：当动画执行完后可执行回调函数。
+例如：
+$('.error').show('slow', 'linear', function(event){
+  $('.error .status').text('Continue');
+});
+（2）基础效果
+hide() 
+◾ .show() 
+◾ .toggle()
+（3）自定义效果
+◾ .animate() 
+◾ .clearQueue () 清空对象上尚未执行的所有队列。如果不带参数，则默认清空的是动画队列。这跟 stop(true)类似，但 stop(true)只能清空动画队列，而这个可以清空所有通过 .queue() 创建的队列。
+◾ .delay() 设置一个延时来推迟执行队列中之后的项目
+◾ .dequeue() 从队列最前端移除一个队列函数，并执行他。
+ $("div").queue(function () {
+          $(this).toggleClass("red");
+          $(this).dequeue();
+      });
+◾ jQuery.fx.interval 
+◾ jQuery.fx.off 
+◾ .queue() 显示或操作在匹配元素上执行的函数队列
+$("#show").click(function () {
+      var n = $("div").queue("fx");
+      $("span").text("Queue length is: " + n.length);
+});
+◾ .stop() 停止所有在指定元素上正在运行的动画。
+（4）Fading效果
+fadeIn() 
+◾ .fadeOut() 
+◾ .fadeTo() 把所有匹配元素的不透明度以渐进方式调整到指定的不透明度，并在动画完成后可选地触发一个回调函数
+◾ .fadeToggle() 
+（5）Sliding 效果
+slideDown() 
+◾ .slideToggle() 
+◾ .slideUp() 
+第六章 Transforms
+1.2D Transforms
+（1）2D Rotate旋转:
+.box-1{
+	transform: rotate(20deg);
+}
+
+.box-2{
+	transform: rotate(-55deg);
+}
+(2)2D Scale缩放
+.box-1{
+	transform: scale(.75);
+}
+
+.box-3{
+	transform: scale(1.25);
+}
+(3)2D Scale X或者Y轴缩放: 可使用scaleX或者scaleY，有可以使用两个参数：
+.box-4{
+	transform: scale(.75, 1.25);
+}
+（3）2D Translate：和相对位置有点相似，不会改变文档流结构。
+.box-1{
+	transform: translateX(-10px);
+}
+
+.box-2{
+	transform: translateY(25%);
+}
+
+.box-3{
+	transform: translate(-10px, 25%);
+}
+(4)2D Skew:在X或者Y轴上扭曲元素
+.box-1{
+	transform: skewX(5deg);
+}
+
+.box-2{
+	transform: skewY(-20deg);
+}
+
+.box-3{
+	transform: skew(5deg, -20deg);
+}
+2.组合Transform
+（1）一个元素不能使用多个transform定义，后面的会覆盖前面的demo
+.box-1 {
+  transform: rotate(25deg) scale(.75);
+}
+.box-2 {
+  transform: skew(10deg, 20deg) translateX(20px);
+}
+(2)实现一个立方体
+.cube{
+	margin: 100px;
+	position: relative;
+}
+
+.side{
+	background: green;
+	width: 95px;
+	height: 95px;
+	line-height: 95px;
+	text-align: center;
+	position: absolute;
+}
+
+.top{
+	background: #33cc54;
+	transform: rotate(-45deg) skew(15deg, 15deg);
+}
+
+.left{
+	background: #2db34a;
+	transform: rotate(15deg) skew(15deg, 15deg) translate(-50%, 100%);
+}
+
+.right{
+	background: #26973e;
+	transform: rotate(-15deg) skew(-15deg, -15deg) translate(50%, 100%);
+}
+3.Transform Origin转换原始位置
+(1)transform-origin的包含两个参数，可以是关键字top/bottom，left/right，或者(0, 0)、(100%, 100%),或者(20px, 30px)
+.box-1 {
+  transform: rotate(15deg);
+  transform-origin: 0 0;
+}
+.box-2 {
+  transform: scale(.5);
+  transform-origin: 100% 100%;
+}
+.box-3 {
+  transform: skewX(20deg);
+  transform-origin: top left;
+}
+.box-4 {
+  transform: scale(.75) translate(-10px, -10px);
+  transform-origin: 20px 50px;
+}
+4.Perspective 3维透视
+（1）如果要设置三维效果，需要设置元素的父类的perspective值。
+(2)透视值越小透视越明显，值越大越不明显。
+（3）案例：
+.box {
+  background: #2db34a;
+  height: 95px;
+  line-height: 95px;
+  text-align: center;
+  transform: perspective(200px) rotateX(45deg);
+  width: 95px;
+}
+（4）Perspective Origin，例如：
+.original-1 {
+  perspective-origin: 0 0;
+}
+.original-2 {
+  perspective-origin: 75% 75%;
+}
+.original-3 {
+  perspective-origin: 20px 40px;
+}
+
+
+第八章 Transitions & Animations
+1.Transitions
+（5）Transition Duration:b包含单位s、ms。
+（6）Transition Duration和Transition Property对应关系。按顺序分别对应，如果只有一个duration则对应所有property。例如：
+ transition-property: background, border-radius;
+  transition-duration: .2s, 1s;
+（7）Transition Timing：设置过度速度变化，属性为transition-timing-function。
+（8）transition-timing-function：包含linear（线性变化）, ease-in（慢-快）, ease-out（快-慢）, and ease-in-out（慢-快-慢）.
+（9）Transition Timing和Property对应关系：如果有多个timing则分别对应属性。例如：
+transition-property: background, border-radius;
+  transition-duration: .2s, 1s;
+  transition-timing-function: linear, ease-in;
+（10）Transition Delay：设置过度延迟执行。如果有多个delay值，则分别对应不同的属性。例如：
+ transition-property: background, border-radius;
+  transition-duration: .2s, 1s;
+  transition-timing-function: linear, ease-in;
+  transition-delay: 0s, 1s;
+2.Transitions缩写
+（1）缩写顺序：  transition-property, transition-duration, transition-timing-function, and lastly transition-delay。多个设置之间用逗号分隔。例如：
+ background: #2db34a;
+  border-radius: 6px;
+  transition: background .2s linear, border-radius 1s ease-in 1s;
+ (2)缩写案例：
+background: #2db34a;
+border-radius: 6px;
+transition: background .2s linear, border-radius 1s ease-in 1s;
+（3）按钮样式实现：
+button{
+	border: 0;
+	background: #0087cc;
+	border-radius: 4px;
+	box-shadow: 0 5px 0 #006599;
+	
+	color: #fff;
+	font-weight: bold;
+	cursor: pointer;
+	font: inherit;
+	/* 设置 4 个边框的样式 */
+	outline: 0;
+	margin: 0;
+	padding: 12px 20px;
+
+	transition: all .1s linear;
+}
+
+button:active{
+	transform: translateY(3px);
+	box-shadow: 0 2px 0 #006599;
+}
+说明：outline设置边框样式，这里设置边框为0；点击按钮活动为：active状态。
+(4)图片翻转案例：
+<head>
+	<meta charset="utf-8">
+	<style type="text/css">
+		body{
+			 font: 600 14px/24px "Open Sans", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", Sans-Serif;
+			 margin: 12px 0;
+
+		}
+		
+		.card-container{
+			cursor: pointer;
+			position: relative;
+			perspective: 600;
+			height: 150px;
+			width: 150px;
+		}
+
+		.card{
+			height: 100%;
+			width: 100%;
+			position: absolute;
+			transform-style: preserve-3d;
+			transition: all 1s ease-in-out;
+		}
+
+		.card:hover{
+			transform: rotateY(180deg);
+		}
+
+		.card .side{
+			width: 100%;
+			height: 100%;
+			border-radius: 6px;
+			position: absolute;
+			/* 属性定义当元素不面向屏幕时是否可见, 如果在旋转元素不希望看到其背面时 */
+			backface-visibility: hidden;
+			overflow: hidden;
+		}
+
+		.card .back{
+			background: #eaeaed;
+			color: #0087cc;
+			line-height: 150px;
+			text-align: center;
+			transform: rotateY(180deg);
+		}
+	</style>
+</head>
+<body>
+	<br>
+	<div class="card-container">
+		<div class="card">
+			<div class="side"><img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/29841/jimmy.jpg" alt="Jimmy Eat World"></div>
+			<div class="side back">Jimmy Eat World</div>
+		</div>
+	</div>
+</body>
+
+
+看到：http://learn.shayhowe.com/advanced-html-css/transitions-animations/ Animations
+
