@@ -1,0 +1,52 @@
+x = 42;
+var y = 43;
+myobj = new Number();
+myobj.h = 4;    // create property h
+delete x;       // returns true (can delete if declared implicitly)
+delete y;       // returns false (cannot delete if declared with var)
+delete Math.PI; // returns false (cannot delete predefined properties)
+delete myobj.h; // returns true (can delete user-defined properties)
+delete myobj;   // returns true (can delete if declared implicitly)
+（3）delete数组：删除数组元素，数组长度没有影响，只是值为undefined。
+（4）typeof：获取操作数的类型。语法为typeof operand或者typeof (operand)。
+（5）typeof说明：返回操作数的类型字符串。如下代码所示：
+var myFun = new Function("5 + 2");
+var shape = "round";
+var size = 1;
+var today = new Date();
+typeof myFun;     // returns "function"
+typeof shape;     // returns "string"
+typeof size;      // returns "number"
+typeof today;     // returns "object"
+typeof dontExist; // returns "undefined"
+（6）void：void被识别为一个没有返回值的表达式。
+（7）void使用：可以被用在超链接上，点击链接没有任何反应。或者提供表单。如下代码所示：
+<a href="javascript:void(0)">Click here to do nothing</a>
+<a href="javascript:void(document.form.submit())">Click here to submit</a>
+5.关联操作符
+（1）in：in operator判断一个特殊属性是否在特殊的对象中。语法为propNameOrNumber in objectName，propNameOrNumber是一个字符串或者数字代表属性名或者数组索引，objectName是一个对象的名字。测试代码如下：
+// Arrays
+var trees = ["redwood", "bay", "cedar", "oak", "maple"];
+0 in trees;        // returns true
+3 in trees;        // returns true
+6 in trees;        // returns false
+"bay" in trees;    // returns false (you must specify the index number,
+                   // not the value at that index)
+"length" in trees; // returns true (length is an Array property)
+
+// built-in objects
+"PI" in Math;          // returns true
+var myString = new String("coral");
+"length" in myString;  // returns true
+
+// Custom objects
+var mycar = { make: "Honda", model: "Accord", year: 1998 };
+"make" in mycar;  // returns true
+"model" in mycar; // returns true
+（2）instanceof：判断对象是否为指定的类型。
+6.super：super被用着调用对象的父亲。可以调用父亲的构造函数。例如：
+super([arguments]); // calls the parent constructor.
+super.functionOnParent([arguments]);
+
+
+看到：https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Numbers_and_dates
