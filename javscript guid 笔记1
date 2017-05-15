@@ -225,3 +225,89 @@ for (let i in arr) {
 for (let i of arr) {
    console.log(i); // logs "3", "5", "7"
 }
+第四章 Functions
+1.函数定义
+（1）参数类型：参数分为值类型和对象类型，值类型参数在函数改变不会影响变量得值，而对象类型在函数改变了属性会影响变量本身。
+（2）函数表达式：var square = function(number) { return number * number }; 定义的函数是一个匿名函数。
+2.函数域和堆栈
+（1）函数调用自身的方法：通过函数名调用、通过arguments.callee调用、通过函数变量调用。例如下面的函数定义：
+var foo = function bar() {
+   // statements go here
+};
+在函数内容调用自身的方法：
+	1.bar()
+	2.arguments.callee()
+	3.foo()
+3.闭包
+（1）定义：js允许内部函数(inner)访问所有定义在外部函数(outer)中的变量和其他函数。外部函数不能访问内部函数中的变量和函数，这为内部函数提供了安全策略。因为内部函数能访问外部函数变量，所以这些变量的生存周期比外部函数本身长。如果内部函数的生存周期比外部函数长，所为的闭包就会被创建，使外部函数的的任务域变的有效。
+var pet = function(name) {   // The outer function defines a variable called "name"
+  var getName = function() {
+    return name;             // The inner function has access to the "name" variable of the outer function
+  }
+  return getName;            // Return the inner function, thereby exposing it to outer scopes
+},
+myPet = pet("Vivie");
+   
+myPet();  
+（2）复杂的闭包:分析下面的代码，外部函数的name变量可以被内部函数访问，内部变量只能通过内部函数访问，保证了内部函数变量的安全性。代码如下：
+var createPet = function(name) {
+  var sex;
+  
+  return {
+    setName: function(newName) {
+      name = newName;
+    },
+    
+    getName: function() {
+      return name;
+    },
+    
+    getSex: function() {
+      return sex;
+    },
+    
+    setSex: function(newSex) {
+      if(typeof newSex === "string" && (newSex.toLowerCase() === "male" || newSex.toLowerCase() === "female")) {
+        sex = newSex;
+      }
+    }
+  }
+}
+
+var pet = createPet("Vivie");
+pet.getName();                  // Vivie
+
+pet.setName("Oliver");
+pet.setSex("male");
+pet.getSex();                   // male
+pet.getName();                  
+4.arguments对象
+（1）定义：获取参数arguments[i]、参数长度arguements.length。
+（2）不固定函数参数数目，例如定义一个方法把所有参数通过一个分隔符串联起来。代码如下：
+// returns "red, orange, blue, "
+myConcat(", ", "red", "orange", "blue");
+
+// returns "elephant; giraffe; lion; cheetah; "
+myConcat("; ", "elephant", "giraffe", "lion", "cheetah");
+
+// returns "sage. basil. oregano. pepper. parsley. "
+myConcat(". ", "sage", "basil", "oregano", "pepper", "parsley");12345678
+5.ES6中的函数参数
+（1）默认参数：函数的参数默认是undefined，在ES6之前也有解决默认参数的方案
+（2）ES6之前的默认参数：判断参数是否是undefined,然后附一个默认值。如下所示：
+function multiply(a, b) {
+  b = typeof b !== 'undefined' ?  b : 1;
+
+  return a*b;
+}
+
+multiply(5); // 5
+（3）ES6的默认参数：function multiply(a, b = 1)
+（4）rest parameter：剩余参数，可通过...theArgs表示。如下代码所示：
+function multiply(multiplier, ...theArgs) {
+  return theArgs.map(x => multiplier * x);
+}
+
+var arr = multiply(2, 1, 2, 3);
+console.log(arr); // [2, 4, 6]123456
+
