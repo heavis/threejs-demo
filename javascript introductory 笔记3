@@ -1,0 +1,205 @@
+第五章 继承和原型链
+1.原型链的继承
+（1）属性继承：javscript对象有一个prototype对象的连接，但尝试访问一个对象属性，我们不经会访问对象本身的属性，也会访问对象的原型链上的属性。
+（2）属性访问实例：
+//假设我们有一个对象o，拥有属性a、b
+//{a: 1, b: 2}
+//o.[[Prototype]]有两个属性b、c
+//{b: 3, c: 4}
+//最终，o.[[Prototype]].[[Prototype]]为null
+//null作为原型链的结束链
+//这里的完整链路径像：
+// {a:1, b:2} ---> {b:3, c:4} ---> null
+
+console.log(o.a); // 1
+//o对象是否有a属性？有，值为1
+
+console.log(o.b); // 2
+//o对象是否有属性b？有，值为2
+//o的原型链对象也有属性b，但它没有被访问到
+//这叫做属性阴影
+
+console.log(o.c); // 4
+//o对象是否有属性c？没有，检查原型链
+//o.[[Prototype]]是否有属性c？有，值为4
+
+console.log(o.d); // undefined
+//o是否有属性d？没有，检查原型链
+//o.[[Prototype]]是否有属性d？没有，检查它的原型
+//o.[[Prototype]].[[Prototype]]为null，检查结束
+//属性未找到，返回undefined
+（3）方法继承：javascript中没有像基于class的语言那样区分方法，而是像对象属性那样作为一个对象的属性来使用。
+（4）方法访问实例：
+var o = {
+  a: 2,
+  m: function(b){
+    return this.a + 1;
+  }
+};
+
+console.log(o.m()); // 3
+//当调用o.m时，'this'指向o对象
+
+var p = Object.create(o);
+//p是一个从o继承的对象
+
+p.a = 12; // creates an own property 'a' on p
+console.log(p.m()); // 13
+//当p.m被调用，'this'执行p
+//因此当p继承了o的m函数
+//‘this.a’意味着p.a，p拥有属性a。
+2.创建对象的不同方法
+（1）使用对象结构化：例如
+var o = {a: 1};
+//新创建的对象o把Object.prototyp作为自己的原型链
+//o没有拥有属性'hasOwnProperty'
+//hasOwnProperty是Object.prototype的一个属性
+//所以o从Object.prototype继承了hasOwnProperty属性
+//Object.prototype的原型链指向null
+//o ---> Object.prototype ---> null
+
+var a = ["yo", "whadup", "?"];
+
+//数组继承于Array.prototype
+//Array.prototype拥有方法，像indexOf、forEach等
+//a的原型链为
+//a ---> Array.prototype ---> object.prototype ---> null
+
+function f(){
+  return 2;
+}
+
+//函数继承于Function.prototype
+//Function.prototype拥有方法，像call、bind等
+//f ---> Function.prototype ---> Object.prototype ---> null
+（2）使用构造函数：
+function Graph() {
+  this.vertices = [];
+  this.edges = [];
+}
+
+Graph.prototype = {
+  addVertex: function(v){
+    this.vertices.push(v);
+  }
+};
+
+var g = new Graph();
+//g是一个对象，并且拥有属性vetices、edges
+//当new Graph（）被执行时，g.[[Prototype]]是Graph.prototype的一个值。
+// g is an object with own properties 'vertices' and 'edges'.
+// g.[[Prototype]] is the value of Graph.prototype when new Graph() is executed.
+（3）使用Object.create：Object.create方法是ES5中的方法。
+var a = {a: 1}; 
+// a ---> Object.prototype ---> null
+
+var b = Object.create(a);
+// b ---> a ---> Object.prototype ---> null
+console.log(b.a); // 1 (inherited)
+
+var c = Object.create(b);
+// c ---> b ---> a ---> Object.prototype ---> null
+
+var d = Object.create(null);
+// d ---> null
+console.log(d.hasOwnProperty); 
+//undefined，因为d没有继承于Object.prototype
+（4）使用class关键字：ES6添加了类型化的一些关键字，虽然和基于class变成有点像，但javascript还是基于prototype。这些关键字包括：class、constructor、static、extends、super。
+"use strict";
+
+class Polygon {
+  constructor(height, width) {
+    this.height = height;
+    this.width = width;
+  }
+}
+
+class Square extends Polygon {
+  constructor(sideLength) {
+    super(sideLength, sideLength);
+  }
+  get area() {
+    return this.height * this.width;
+  }
+  set sideLength(newLength) {
+    this.height = newLength;
+    this.width = newLength;
+  }
+}
+
+var square = new Square(2);
+3.对象自身属性
+（1）hasOwnProperty:使用hasOwnProperty判断对象本身是否拥有指定属性。	
+（2）hasownProperty误用：扩展本地prototypes不是好的实践，破坏了封装性。扩展本地prototype一般适用于扩充javascript新的引擎，例如Array.forEach等。
+（3）getPrototypeOf：Object.getPrototypeOf用来获取一个对象实体的原型链。例如下面的代码:
+var a1 = new A(); 
+var a2 = new A(); 
+Object.getPrototypeOf(a1).doSomething == Object.getPrototypeOf(a2).doSomething == A.prototype.doSomething
+
+
+第六章 Javscript类型化数组
+1.Buffers和views：类型化架构
+（1）定义：类型化数组由Buffers和Views组成，buffer只用来提供数据的存放，不提供访问。如果要访问buffer，需要使用view。view提供了数据类型、开始offset、元素数量。
+（2）ArrayBuffer：它代表了字节数据的缓存，你不能直接操作ArrayBuffer。如果要操作ArrayBuffer，需要使用array view或者DataView。
+（3）类型化数组视图：
+Type Size in bytes Description Web IDL type Equivalent C type 
+Int8Array 1 8-bit two's complement signed integer byte int8_t 
+Uint8Array 1 8-bit unsigned integer octet uint8_t 
+Uint8ClampedArray 1 8-bit unsigned integer (clamped) octet uint8_t 
+Int16Array 2 16-bit two's complement signed integer short int16_t 
+Uint16Array 2 16-bit unsigned integer unsigned short uint16_t 
+Int32Array 4 32-bit two's complement signed integer long int32_t 
+Uint32Array 4 32-bit unsigned integer unsigned long uint32_t 
+Float32Array 4 32-bit IEEE floating point number unrestricted float float 
+Float64Array 8 64-bit IEEE floating point number unrestricted double double 
+（4）DataView：提供读写buffer的API，
+2.使用类型化数组的Web API
+（1）FileReader.prototype.readAsArrayBuffer()：用来读取文件。
+（2）XMLHttpRequest.prototype.send()：send方法现在可以支持类型化数组，ArrayBuffer作为参数。
+（3）ImageData.data：是一个Uint8ClampedArray，保存表示RGBA的0--255数字的一维数组。
+3.举例分析
+（1）使用view和buffers：
+//创建一个16字节长度的buffer
+var buffer = new ArrayBuffer(16);
+//byteLength判断buffer的字节长度
+if (buffer.byteLength === 16) {
+  console.log("Yes, it's 16 bytes.");
+} else {
+  console.log("Oh no, it's the wrong size!");
+}
+//在我们操作buffer之前，创建一个32为整数的view。view可直接操作buffer。
+var int32View = new Int32Array(buffer);
+//32位整数需要用4个字节表示，所以int32view的长度应该为4。
+for (var i = 0; i < int32View.length; i++) {
+  //设置int32View每项的值
+  int32View[i] = i * 2;
+}
+（2）同一个数据上的多个view：我们可以继续使用（1）中的buffer创建另外一个view
+//创建一个16位整数数组
+var int16View = new Int16Array(buffer);
+//一个16位数值需要用2个直接表示，所以int16View的长度为8
+for (var i = 0; i < int16View.length; i++) {
+  console.log("Entry " + i + ": " + int16View[i]);
+}	
+//可以直接重新赋值给view
+int16View[0] = 32;
+console.log("Entry 0 in the 32-bit array is now " + int32View[0]);
+（3）处理复杂的数据结构：一个buffer对应多个view，可以用来处理不同数据类型的数据对象。例如在网络传输时，需要传输下面的一个结构体就可以使用。
+//一个复杂的结构体
+struct someStruct {
+  unsigned long id;
+  char username[16];
+  float amountDue;
+};
+//通过下面你的方式读取结构体
+var buffer = new ArrayBuffer(24);
+// ... read the data into the buffer ...
+var idView = new Uint32Array(buffer, 0, 1);
+var usernameView = new Uint8Array(buffer, 4, 16);
+var amountDueView = new Float32Array(buffer, 20, 1);1234567
+
+第七章 内存管理
+
+
+
+看到：https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop 看完了
