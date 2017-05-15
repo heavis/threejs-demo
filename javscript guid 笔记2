@@ -1,0 +1,66 @@
+第六章 数字和日期
+1.数字
+（1）特殊数字：+Infinity, -Infinity、NaN（非数字）。
+（2）四种数字类型：十进制、八进制、2进制、十六进制。
+（3）二进制：以“0b”或者“0B”开头；八进制：以“0”开始；十六进制：以“0x”或者“0X”开头。
+2.数字对象
+（1）常用数字对象：Number.MAX_VALUE、Number.MIN_VALUE、Number.POSITIVE_INFINITY、Number.NEGATIVE_INFINITY、Number.NaN。
+（2）数字方法：Number.parseFloat()、Number.parseInt()、Number.isFinite()、Number.isInteger()、Number.isNaN()
+3.数学对象Math
+（1）数学对象方法：Math.abs()绝对值、floor()小于或等于当前数字的最大数字、 ceil()大于或等于当前数字的最小数字、random()随机数
+4.日期对象
+1.var dateObjectName = new Date([parameters])中parameters语法
+（1）为空：创建当前日期和时间。
+（2）字符串表达："Month day, year hours:minutes:seconds."，例如ar Xmas95 = new Date("December 25, 1995 13:30:00")。
+（3）数字表达：year, month, and day，例如Date(1995, 11, 25)。
+（4）完整数字表达：year, month, day, hour, minute, and seconds，例如new Date(1995, 11, 25, 9, 30, 0)。
+（5）常用方法：getFullYear()，返回year、Date.parse、getHours、getMinutes、getSeconds。
+
+第七章 字符串格式化
+1.字符串方法
+（1）chartAt、charCodeAt、codePointAt，返回指定位置的字符或字符编码。
+（2）indexOf、latIndexOf。
+（3）startsWidth、endsWidth、includes。以指定字符串开始或结尾，包含指定字符。
+（4）concat，结合两个字符串。
+（5）split，分隔成数组。
+（6）抽取部分字符串。
+（7）match、replace、search，正则表达式操作。
+（8）toLowerCase、toUpperCase。
+（9）trime，在开始和结尾去掉空白。
+2.多行排列
+（1）使用\n换行：console.log("string text line 1\n\
+string text line 2");
+（2）使用` `多行显示：console.log(`string text line 1
+string text line 2`);
+（3）字符串内嵌表达式：${expression}，例如：
+var a = 5;
+var b = 10;
+console.log(`Fifteen is ${a + b} and\nnot ${2 * a + b}.`);
+// "Fifteen is 15 and
+// not 20."
+
+第八章 数组集合
+1.数组对象
+（1）创建数组
+var arr = new Array(element0, element1, ..., elementN);
+var arr = Array(element0, element1, ..., elementN);
+var arr = [element0, element1, ..., elementN];
+（2）初始化指定数组长度：var arr = Array(42); 
+（3）添加属性：arr[3.4]将会为arr添加一个名字为3.4的属性
+var arr = [];
+arr[3.4] = "Oranges";
+console.log(arr.length);                // 0
+console.log(arr.hasOwnProperty(3.4));   // true
+2.迭代数组
+（1）for：for (var i = 0; i < colors.length; i++)
+（2）forEach：
+var colors = ['red', 'green', 'blue'];
+colors.forEach(function(color) {
+  console.log(color);
+});
+3.数组方法
+（1）concat：组合两个数组，
+var myArray = new Array("1", "2", "3");
+myArray = myArray.concat("a", "b", "c"); 
+// myArray is now ["1", "2", "3", "a", "b", "c"]
+（2）join：将数组转换为字符串，
